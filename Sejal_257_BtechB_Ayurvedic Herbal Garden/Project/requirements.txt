@@ -1,0 +1,21 @@
+# Core Backend Framework
+flask==3.0.0
+
+# Database (MongoDB)
+pymongo==4.6.1
+dnspython==2.4.2
+
+# Machine Learning
+scikit-learn==1.3.2
+numpy==1.26.2
+pandas==2.1.4
+joblib==1.3.2
+
+# Data Processing & Utilities
+scipy==1.11.4
+
+# Environment & Deployment
+python-dotenv==1.0.0
+
+# CORS support (if frontend & backend are separate)
+flask-cors==4.0.0

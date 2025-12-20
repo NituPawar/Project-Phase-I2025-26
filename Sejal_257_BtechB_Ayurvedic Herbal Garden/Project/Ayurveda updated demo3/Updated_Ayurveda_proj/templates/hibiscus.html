@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Hibiscus - Medicinal Plant</title>
+<style>
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #f0fdf4;
+    color: #2f3e2f;
+    margin: 0;
+    padding: 20px;
+    line-height: 1.6;
+  }
+  .container {
+    max-width: 800px;
+    margin: auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    position: relative;
+  }
+  img {
+    max-width: 400px;
+    width: 100%;
+    border-radius: 12px;
+    margin: 0 auto 20px;
+    display: block;
+  }
+  h1 {
+    color: #15803d;
+    text-align: center;
+  }
+  h2 {
+    margin-top: 20px;
+    color: #166534;
+  }
+  a {
+    display: inline-block;
+    margin-top: 20px;
+    text-decoration: none;
+    color: #fff;
+    background: #15803d;
+    padding: 10px 15px;
+    border-radius: 8px;
+  }
+  a:hover {
+    background: #0d4d24;
+  }
+  .top-right {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    margin-top: 0;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <a href="{{ url_for('index1') }}" class="top-right">⬅ Back to Garden</a>
+    <h1>Hibiscus (Hibiscus rosa-sinensis)</h1>
+    <img src="https://foliagefriend.com/wp-content/uploads/2023/04/Hibiscus-flowers-9.jpeg" alt="Hibiscus Flower" />
+    <p><strong>Hibiscus</strong> is a vibrant flowering plant known for its large blossoms and use in herbal teas, hair care, and traditional medicine.</p>
+
+    <h2>Uses</h2>
+    <ul>
+      <li>Commonly brewed into hibiscus tea.</li>
+      <li>Applied in hair oils and shampoos for scalp health.</li>
+      <li>Used in skincare for its soothing properties.</li>
+    </ul>
+
+    <h2>Health Benefits</h2>
+    <ul>
+      <li>Helps reduce high blood pressure and cholesterol levels.</li>
+      <li>Rich in antioxidants that boost immunity.</li>
+      <li>Promotes healthy hair growth and reduces dandruff.</li>
+      <li>Supports liver health and detoxification.</li>
+    </ul>
+  </div>
+</body>
+</html>

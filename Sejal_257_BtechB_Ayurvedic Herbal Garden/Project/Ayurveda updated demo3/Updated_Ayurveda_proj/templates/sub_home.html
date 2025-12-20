@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ayurvedic Medicinal Plant Project</title>
+  <style>
+   
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, #dff4e4, #f7fff3, #e9f7ea);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before, body::after {
+      content: "🍃";
+      position: absolute;
+      font-size: 3.5rem;
+      opacity: 0.18;
+      animation: float 6s ease-in-out infinite alternate;
+    }
+
+    body::before { top: 10%; left: 5%; }
+    body::after { bottom: 15%; right: 8%; }
+
+    @keyframes float {
+      from { transform: translateY(0); }
+      to { transform: translateY(-25px); }
+    }
+
+    nav {
+      position: fixed;
+      top: 1.5rem;
+      right: 1.5rem;
+      background: rgba(255, 255, 255, 0.58);
+      backdrop-filter: blur(12px);
+      padding: 0.7rem 1.4rem;
+      border-radius: 40px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+      z-index: 1000;
+    }
+
+    nav button {
+      background: #3e6843;
+      border: none;
+      padding: 0.55rem 1.3rem;
+      border-radius: 20px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: 0.3s ease;
+    }
+
+    nav button:hover {
+      background: #2f5034;
+      transform: translateY(-2px);
+    }
+
+    /* Fully transparent container */
+    .homepage-container {
+      background: transparent;
+      padding: 3rem;
+      border-radius: 22px;
+      text-align: center;
+      max-width: 1000px;
+      width: 100%;
+      animation: slideUp 1s ease forwards;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .homepage-container h1,
+    .homepage-container p,
+    .homepage-container h2 {
+      cursor: pointer; /* cursor changes on text hover */
+    }
+
+    .homepage-container a {
+      cursor: pointer; /* keep normal link pointer for links */
+    }
+
+    .homepage-container h1 {
+      color: #204b25;
+      margin-bottom: 2rem;
+      font-size: 2.4rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-shadow: 0 3px 10px rgba(0,0,0,0.15);
+    }
+
+    .modules {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .module {
+      background: linear-gradient(135deg, #ffffff, #f3fff5);
+      border-left: 6px solid #3d6f42;
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+      transition: 0.4s ease;
+      min-width: 220px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .module::after {
+      content: "🌱";
+      position: absolute;
+      font-size: 3rem;
+      color: rgba(0,0,0,0.05);
+      right: 10px;
+      bottom: 10px;
+    }
+
+    .module:hover {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+      background: linear-gradient(135deg, #eefded, #ffffff);
+    }
+
+    .module h2 {
+      color: #2f4f2f;
+      margin-bottom: 0.8rem;
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .module p {
+      color: #444;
+      font-size: 1.05rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .module a {
+      display: inline-block;
+      margin-top: 0.3rem;
+      color: #2f5e34;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1.05rem;
+      transition: 0.3s ease;
+    }
+
+    .module a:hover {
+      color: #1d3e20;
+      text-decoration: underline;
+    }
+
+    @media (min-width: 768px) {
+      .modules {
+        flex-direction: row;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+  <button onclick="location.href='{{ url_for('home') }}'">Home</button>
+</nav>
+
+  <div class="homepage-container">
+    <h1>🌿 Welcome to Ayurveda Medicinal Plants</h1>
+
+    <div class="modules">
+
+      <div class="module">
+        <h2>Medicinal Plants</h2>
+        <p>Explore detailed information about Ayurvedic medicinal plants their uses, benefits, and cultivation tips.</p>
+        <a href="{{ url_for('index1') }}">Learn More →</a>
+      </div>
+
+      <div class="module">
+        <h2>Herbal Remedies</h2>
+        <p>Discover traditional Ayurvedic remedies for common ailments using natural herbs and ingredients.</p>
+        <a href="{{ url_for('index') }}">Explore Remedies →</a>
+      </div>
+
+      <div class="module">
+        <h2>Buy Ayurvedic Seeds</h2>
+        <p>Purchase high-quality Ayurvedic seeds recommended by our model to support your wellness journey.</p>
+        <a href="{{ url_for('seeds') }}">Shop Now →</a>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>

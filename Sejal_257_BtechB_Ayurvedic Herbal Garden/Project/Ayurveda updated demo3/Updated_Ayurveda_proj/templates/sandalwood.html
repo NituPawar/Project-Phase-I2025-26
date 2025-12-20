@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sandalwood - Medicinal Plant</title>
+<style>
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #fefaf3;
+    color: #2f3e2f;
+    margin: 0;
+    padding: 20px;
+    line-height: 1.6;
+  }
+  .container {
+    max-width: 800px;
+    margin: auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    position: relative;
+  }
+  img {
+    max-width: 400px;
+    width: 100%;
+    border-radius: 12px;
+    margin: 0 auto 20px;
+    display: block;
+  }
+  h1 {
+    color: #8b5e3c;
+    text-align: center;
+  }
+  h2 {
+    margin-top: 20px;
+    color: #6d3b1f;
+  }
+  a.back-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    text-decoration: none;
+    color: #fff;
+    background: #8b5e3c;
+    padding: 10px 15px;
+    border-radius: 8px;
+  }
+  a.back-btn:hover {
+    background: #5c3920;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <a href="{{ url_for('index1') }}" class="back-btn">⬅ Back to Garden</a>
+    <h1>Sandalwood (Santalum album)</h1>
+    <img src="https://wallpapercave.com/wp/wp4668282.jpg" alt="Sandalwood Tree" />
+    <p><strong>Sandalwood</strong> is a fragrant wood valued for its essential oil, widely used in Ayurveda, cosmetics, and spirituality. Its cooling properties make it highly beneficial in traditional medicine.</p>
+    
+    <h2>Uses</h2>
+    <ul>
+      <li>Used in perfumes, incense, and cosmetics.</li>
+      <li>Applied as sandalwood paste for skincare.</li>
+      <li>Used in Ayurvedic and Unani medicines.</li>
+    </ul>
+
+    <h2>Health Benefits</h2>
+    <ul>
+      <li>Soothes skin irritation and acne.</li>
+      <li>Reduces stress and promotes relaxation.</li>
+      <li>Improves focus and mental clarity.</li>
+      <li>Anti-inflammatory and antiseptic properties.</li>
+    </ul>
+  </div>
+</body>
+</html>
