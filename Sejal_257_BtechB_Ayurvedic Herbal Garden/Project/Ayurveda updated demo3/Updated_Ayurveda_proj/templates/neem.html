@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Neem - Medicinal Plant</title>
+<style>
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #f0fdf4;
+    color: #2f3e2f;
+    margin: 0;
+    padding: 20px;
+    line-height: 1.6;
+  }
+  .container {
+    max-width: 800px;
+    margin: auto;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    position: relative;
+  }
+  img {
+    max-width: 400px;
+    width: 100%;
+    border-radius: 12px;
+    margin: 0 auto 20px;
+    display: block;
+  }
+  h1 {
+    color: #166534;
+    text-align: center;
+  }
+  h2 {
+    margin-top: 20px;
+    color: #14532d;
+  }
+  button.back-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    color: #fff;
+    background: #166534;
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+  button.back-btn:hover {
+    background: #0d4d24;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <button class="back-btn" onclick="location.href='{{ url_for('index1') }}'">⬅ Back to Garden</button>
+    <h1>Neem (Azadirachta indica)</h1>
+    <img src="https://www.greendna.in/cdn/shop/products/neem-leaves-500x500_500x.jpg?v=1561651964" alt="Neem Plant" />
+    <p><strong>Neem</strong> is known as the "village pharmacy" due to its wide range of medicinal properties. It has been used in Ayurveda for centuries.</p>
+
+    <h2>Uses</h2>
+    <ul>
+      <li>Used in toothpaste, soaps, and cosmetics.</li>
+      <li>Applied in skin treatments for acne and infections.</li>
+      <li>Neem oil is used as a natural pesticide.</li>
+    </ul>
+
+    <h2>Health Benefits</h2>
+    <ul>
+      <li>Purifies blood and boosts immunity.</li>
+      <li>Treats skin conditions like acne and eczema.</li>
+      <li>Improves oral and dental health.</li>
+      <li>Controls dandruff and scalp issues.</li>
+    </ul>
+  </div>
+</body>
+</html>

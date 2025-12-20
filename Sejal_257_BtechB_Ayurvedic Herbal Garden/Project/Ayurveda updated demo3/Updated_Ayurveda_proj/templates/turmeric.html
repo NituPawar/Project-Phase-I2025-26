@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Turmeric - Medicinal Plant</title>
+<style>
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #fdf6e4;
+    color: #2f3e2f;
+    margin: 0;
+    padding: 20px;
+    line-height: 1.6;
+  }
+  .container {
+    max-width: 800px;
+    margin: auto;
+    background: #fff8ec;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    position: relative;
+  }
+  img {
+    max-width: 400px;
+    width: 100%;
+    border-radius: 12px;
+    margin: 0 auto 20px;
+    display: block;
+  }
+  h1 { color: #d97706; text-align: center; }
+  h2 { margin-top: 20px; color: #2f5d34; }
+  a.back-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    text-decoration: none;
+    color: #fff;
+    background: #2f5d34;
+    padding: 10px 15px;
+    border-radius: 8px;
+  }
+  a.back-btn:hover { background: #1e4023; }
+</style>
+</head>
+<body>
+  <div class="container">
+    <a href="{{ url_for('index1') }}" class="back-btn">⬅ Back to Garden</a>
+    <h1>Turmeric (Curcuma longa)</h1>
+    <img src="https://img.freepik.com/premium-photo/fresh-raw-turmeric-white-background_781325-18593.jpg" alt="Turmeric Plant" />
+    <p><strong>Turmeric</strong> is a golden-yellow spice widely used in cooking and Ayurvedic medicine. It contains the active compound <em>curcumin</em>, which has powerful anti-inflammatory and antioxidant properties.</p>
+    
+    <h2>Uses</h2>
+    <ul>
+      <li>Used as a spice in cooking (curries, milk, teas).</li>
+      <li>Applied in skincare for healing and brightening.</li>
+      <li>Used as a natural coloring agent.</li>
+    </ul>
+
+    <h2>Health Benefits</h2>
+    <ul>
+      <li>Reduces inflammation and joint pain.</li>
+      <li>Boosts immunity and digestion.</li>
+      <li>Promotes wound healing and skin health.</li>
+      <li>Supports liver function and detoxification.</li>
+    </ul>
+  </div>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mint - Medicinal Plant</title>
+<style>
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #e0f2fe;
+    color: #2f3e2f;
+    margin: 0;
+    padding: 20px;
+    line-height: 1.6;
+  }
+  .container {
+    max-width: 800px;
+    margin: auto;
+    background: #f0f9ff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    position: relative;
+  }
+  img {
+    max-width: 400px;
+    width: 100%;
+    border-radius: 12px;
+    margin: 0 auto 20px;
+    display: block;
+  }
+  h1 {
+    color: #0c4a6e;
+    text-align: center;
+  }
+  h2 {
+    margin-top: 20px;
+    color: #075985;
+  }
+  a.back-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    text-decoration: none;
+    color: #fff;
+    background: #0c4a6e;
+    padding: 10px 15px;
+    border-radius: 8px;
+  }
+  a.back-btn:hover {
+    background: #064e3b;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <a href="{{ url_for('index1') }}" class="back-btn">⬅ Back to Garden</a>
+    <h1>Mint (Mentha)</h1>
+    <img src="https://gardenerspath.com/wp-content/uploads/2024/03/Best-Mint-Varieties-Feature.jpg" alt="Mint Plant" />
+    <p><strong>Mint</strong> is a fragrant herb commonly used in culinary dishes, beverages, and traditional medicine for its cooling and digestive properties.</p>
+
+    <h2>Uses</h2>
+    <ul>
+      <li>Used in teas, salads, sauces, and desserts.</li>
+      <li>Applied in essential oils and cosmetics.</li>
+      <li>Used as a natural remedy for indigestion and nausea.</li>
+    </ul>
+
+    <h2>Health Benefits</h2>
+    <ul>
+      <li>Aids digestion and soothes the stomach.</li>
+      <li>Relieves headaches and respiratory congestion.</li>
+      <li>Provides antioxidants and supports immunity.</li>
+      <li>Freshens breath and promotes oral health.</li>
+    </ul>
+  </div>
+</body>
+</html>

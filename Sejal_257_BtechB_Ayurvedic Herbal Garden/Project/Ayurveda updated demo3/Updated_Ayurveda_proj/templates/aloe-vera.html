@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Aloe Vera - Medicinal Plant</title>
+<style>
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #e6fffa;
+    color: #2f3e2f;
+    margin: 0;
+    padding: 20px;
+    line-height: 1.6;
+  }
+  .container {
+    max-width: 800px;
+    margin: auto;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    position: relative;
+  }
+  img {
+    max-width: 400px;
+    width: 100%;
+    border-radius: 12px;
+    margin: 0 auto 20px;
+    display: block;
+    cursor: default; /* Changed to default since no click */
+  }
+  h1 { color: #0f766e; text-align: center; }
+  h2 { margin-top: 20px; color: #115e59; }
+  a.back-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    text-decoration: none;
+    color: #fff;
+    background: #0f766e;
+    padding: 10px 15px;
+    border-radius: 8px;
+  }
+  a.back-btn:hover { background: #064e3b; }
+</style>
+</head>
+<body>
+  <div class="container">
+    <a href="{{ url_for('index1') }}" class="back-btn">⬅ Back to Garden</a>
+    <h1>Aloe Vera (Aloe barbadensis miller)</h1>
+    <img id="aloe-image" src="https://img.staticmb.com/mbcontent/images/uploads/2023/12/How-to-grow-aloe-vera-plant-at-home.jpg" alt="Aloe Vera Plant" />
+    <p><strong>Aloe Vera</strong> is a succulent plant known for its soothing gel, widely used in skincare and traditional medicine for its cooling and healing properties.</p>
+    
+    <h2>Uses</h2>
+    <ul>
+      <li>Applied on burns, wounds, and skin irritations.</li>
+      <li>Used in cosmetics and moisturizers.</li>
+      <li>Consumed in juices for health benefits.</li>
+    </ul>
+
+    <h2>Health Benefits</h2>
+    <ul>
+      <li>Heals skin burns and reduces scars.</li>
+      <li>Improves digestion and detoxifies the body.</li>
+      <li>Boosts immunity and reduces inflammation.</li>
+      <li>Supports oral and hair health.</li>
+    </ul>
+  </div>
+
+</body>
+</html>

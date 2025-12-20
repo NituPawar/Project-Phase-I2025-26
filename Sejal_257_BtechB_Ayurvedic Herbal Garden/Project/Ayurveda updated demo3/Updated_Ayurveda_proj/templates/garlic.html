@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Garlic - Medicinal Plant</title>
+<style>
+  body { 
+    font-family: 'Segoe UI', sans-serif; 
+    background: #f0fdf4; 
+    color: #2f3e2f; 
+    margin: 0; 
+    padding: 20px; 
+    line-height: 1.6; 
+  }
+  .container { 
+    max-width: 800px; 
+    margin: auto; 
+    background: #fff; 
+    padding: 20px; 
+    border-radius: 12px; 
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
+    position: relative; 
+  }
+  img { 
+    max-width: 400px; 
+    width: 100%; 
+    border-radius: 12px; 
+    margin: 0 auto 20px; 
+    display: block; 
+  }
+  h1 { 
+    color: #15803d; 
+    text-align: center; 
+  }
+  h2 { 
+    margin-top: 20px; 
+    color: #166534; 
+  }
+  a { 
+    display: inline-block; 
+    margin-top: 20px; 
+    text-decoration: none; 
+    color: #fff; 
+    background: #15803d; 
+    padding: 10px 15px; 
+    border-radius: 8px; 
+  }
+  a:hover { 
+    background: #0d4d24; 
+  }
+  /* Top-right back button */
+  .top-right { 
+    position: absolute; 
+    top: 20px; 
+    right: 20px; 
+    margin-top: 0; 
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <a href="{{ url_for('index1') }}" class="top-right">⬅ Back to Garden</a>
+    <h1>Garlic (Allium sativum)</h1>
+    <img src="https://gardenerspath.com/wp-content/uploads/2019/12/Bunch-of-Purple-Garlic-Harvested-and-Cleaned.jpg" alt="Garlic Bulbs" />
+    <p><strong>Garlic</strong> is a widely used herb and spice, valued for its strong flavor and potent medicinal properties in traditional and modern medicine.</p>
+
+    <h2>Uses</h2>
+    <ul>
+      <li>Used in cooking for flavor and seasoning.</li>
+      <li>Included in herbal remedies for colds and infections.</li>
+      <li>Consumed raw or as supplements for health benefits.</li>
+    </ul>
+
+    <h2>Health Benefits</h2>
+    <ul>
+      <li>Boosts immunity and fights common infections.</li>
+      <li>Helps lower blood pressure and cholesterol.</li>
+      <li>Improves heart health by reducing plaque buildup.</li>
+      <li>Contains antioxidants that protect against cell damage.</li>
+    </ul>
+  </div>
+</body>
+</html>

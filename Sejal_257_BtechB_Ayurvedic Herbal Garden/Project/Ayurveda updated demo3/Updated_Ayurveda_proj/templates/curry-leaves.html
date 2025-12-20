@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Curry Leaves - Medicinal Plant</title>
+<style>
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #fefce8;
+    color: #2f3e2f;
+    margin: 0;
+    padding: 20px;
+    line-height: 1.6;
+  }
+  .container {
+    max-width: 800px;
+    margin: auto;
+    background: #fffef2;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    position: relative;
+  }
+  img {
+    max-width: 400px;
+    width: 100%;
+    border-radius: 12px;
+    margin: 0 auto 20px;
+    display: block;
+  }
+  h1 {
+    color: #b45309;
+    text-align: center;
+  }
+  h2 {
+    margin-top: 20px;
+    color: #92400e;
+  }
+  a {
+    display: inline-block;
+    margin-top: 20px;
+    text-decoration: none;
+    color: #fff;
+    background: #b45309;
+    padding: 10px 15px;
+    border-radius: 8px;
+  }
+  a:hover {
+    background: #78350f;
+  }
+  /* Top-right back button */
+  .top-right {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    margin-top: 0;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <a href="{{ url_for('index1') }}" class="top-right">⬅ Back to Garden</a>
+    <h1>Curry Leaves (Murraya koenigii)</h1>
+    <img src="https://images.herzindagi.info/image/2021/Jan/best-uses-of-curry-leaf.jpg" alt="Curry Leaves Plant" />
+    <p><strong>Curry Leaves</strong> are aromatic leaves widely used in Indian cooking for flavoring. Apart from culinary uses, they are also valued in Ayurveda for their medicinal properties and nutrients.</p>
+
+    <h2>Uses</h2>
+    <ul>
+      <li>Commonly used in curries, chutneys, and soups.</li>
+      <li>Applied as herbal hair oil for strengthening hair.</li>
+      <li>Used in traditional remedies for stomach ailments.</li>
+    </ul>
+
+    <h2>Health Benefits</h2>
+    <ul>
+      <li>Improves digestion and reduces acidity.</li>
+      <li>Strengthens hair and prevents premature greying.</li>
+      <li>Supports weight loss and metabolism.</li>
+      <li>Controls blood sugar levels.</li>
+    </ul>
+  </div>
+</body>
+</html>
