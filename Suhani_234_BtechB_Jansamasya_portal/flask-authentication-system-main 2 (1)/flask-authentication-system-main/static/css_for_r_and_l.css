@@ -1,0 +1,217 @@
+:root {
+    --primary-purple: #6a0dad;
+    --secondary-purple: #9b59b6;
+    --light-purple: #e2d4f0;
+    --dark-purple: #4b0082;
+    --accent-gold: #d4af37;
+    --light-gray: #f8f9fa;
+    --dark-gray: #fcfeff;
+    --success-green: #28a745;
+    --danger-red: #dc3545;
+    --warning-yellow: #ffc107;
+    --info-blue: #17a2b8;
+}
+
+/* ----------------------------------
+   🌈 Smooth Gradient Background (non-disturbing)
+---------------------------------- */
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(120deg, #e2d4f0, #f3e8ff, #e9d9ff);
+    background-size: 300% 300%;
+    animation: bgAnimation 12s ease infinite;
+
+    color: var(--dark-gray);
+    padding: 2rem;
+}
+
+@keyframes bgAnimation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* ----------------------------------
+   ❌ Removed animation from headings (fixed disturbance)
+---------------------------------- */
+h1 {
+    color: var(--primary-purple);
+    text-align: center;
+    margin: 1rem;
+}
+
+/* ----------------------------------
+   💎 Form with Hover Effect (safe)
+---------------------------------- */
+/* form {
+    background-color: rgb(248, 245, 249);
+    border: 2px solid var(--light-purple);
+    border-radius: 12px;
+    padding: 2rem;
+    max-width: 400px;
+    margin: 3rem auto;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: fadeInUp 1s ease-out;
+    
+
+} */
+ /* ----------------------------------
+   💎 Form with Purple Glow Animation
+---------------------------------- */
+form {
+    background-color: rgb(248, 245, 249);
+    border: 2px solid var(--light-purple);
+    border-radius: 12px;
+    padding: 2rem;
+    max-width: 400px;
+    margin: 3rem auto;
+
+    box-shadow: 
+        0 0 12px rgba(106, 13, 173, 0.4),
+        0 0 25px rgba(155, 89, 182, 0.25);
+
+    animation: fadeInUp 1s ease-out, purpleGlow 3s ease-in-out infinite alternate;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Purple glow animation */
+@keyframes purpleGlow {
+    0% {
+        box-shadow:
+            0 0 12px rgba(106, 13, 173, 0.3),
+            0 0 25px rgba(155, 89, 182, 0.18);
+    }
+    100% {
+        box-shadow:
+            0 0 18px rgba(106, 13, 173, 0.55),
+            0 0 35px rgba(155, 89, 182, 0.32);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+form:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 8px 26px rgba(0, 0, 0, 0.25);
+}
+
+/* ----------------------------------
+   🔍 Focus Glow Input Animation
+---------------------------------- */
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    margin: 12px 0;
+    border: 1px solid var(--light-purple);
+    border-radius: 5px;
+    font-size: 16px;
+    transition: 0.3s ease;
+    background: #ffffff;
+}
+
+input:focus {
+    border-color: var(--primary-purple);
+    box-shadow: 0 0 10px rgba(155, 89, 182, 0.5);
+    transform: scale(1.02);
+}
+
+/* ----------------------------------
+   🔘 Button with Ripple Effect
+---------------------------------- */
+button.btn-primary {
+    background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+    color: white;
+    border: none;
+    padding: 12px;
+    width: 100%;
+    font-size: 17px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.25s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+button.btn-primary:hover {
+    background: linear-gradient(135deg, var(--dark-purple), var(--primary-purple));
+    transform: translateY(-3px);
+}
+
+/* Ripple animation (non-disturbing) */
+button.btn-primary:active::after {
+    content: "";
+    position: absolute;
+    background: rgba(255, 255, 255, 0.5);
+    width: 10px;
+    height: 10px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    border-radius: 50%;
+    animation: ripple 0.6s ease-out;
+}
+
+@keyframes ripple {
+    to { transform: translate(-50%, -50%) scale(12); opacity: 0; }
+}
+
+/* ----------------------------------
+   🔗 Link Shimmer (safe)
+---------------------------------- */
+p {
+    text-align: center;
+    margin-top: 1rem;
+    text-decoration-thickness: bol;
+}
+
+a {
+    color: var(--accent-gold);
+    font-weight: bold;
+    text-decoration: none;
+    position: relative;
+}
+
+a:hover::after {
+    content: "";
+    position: absolute;
+    height: 2px;
+    width: 100%;
+    left: 0;
+    bottom: -2px;
+    background: var(--accent-gold);
+    animation: shimmer 0.6s ease;
+}
+
+@keyframes shimmer {
+    from { width: 0; }
+    to { width: 100%; }
+}
+
+/* ----------------------------------
+   ⚠ Flash Messages
+---------------------------------- */
+.alert {
+    padding: 10px;
+    border-radius: 6px;
+    margin: 10px auto;
+    width: 90%;
+    max-width: 400px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.alert-success { background-color: var(--success-green); color: white; }
+.alert-danger  { background-color: var(--danger-red); color: white; }
+.alert-warning { background-color: var(--warning-yellow); color: black; }
+.alert-info    { background-color: var(--info-blue); color: white; }

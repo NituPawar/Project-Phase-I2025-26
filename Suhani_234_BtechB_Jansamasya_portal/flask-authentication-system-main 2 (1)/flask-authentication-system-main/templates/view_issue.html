@@ -1,0 +1,541 @@
+{% extends "base.html" %}
+{% block title %}Issue Details - Jan Samasya Portal{% endblock %}
+{% block head %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        :root{
+            --purple-600: #7b1fa2;
+            --purple-700: #6a0dad;
+            --muted: #6b7280;
+            --glass-bg: rgba(255,255,255,0.84);
+            --glass-border: rgba(106,13,173,0.08);
+            --accent: linear-gradient(90deg,var(--purple-600),#9c27b0);
+            --max-width: 1100px;
+        }
+
+        .view-container {
+            max-width: var(--max-width);
+            margin: 36px auto;
+            padding: 20px;
+        }
+        .content-wrapper {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            padding: 26px;
+            box-shadow: 0 18px 40px rgba(15,23,42,0.06);
+            backdrop-filter: blur(6px);
+        }
+
+        .issue-header {
+            display:flex;
+            justify-content:space-between;
+            align-items:flex-start;
+            gap:18px;
+            margin-bottom:16px;
+        }
+        .issue-title {
+            font-size: clamp(1.25rem, 2.4vw, 1.8rem);
+            color: var(--purple-700);
+            font-weight: 800;
+            margin:0 0 6px 0;
+        }
+
+        .issue-sub {
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+        .issue-photos{
+            margin-top:12px;
+            width: 500px;
+            height: auto;
+        }
+        .meta-row {
+            display:flex;
+            gap:10px;
+            flex-wrap:wrap;
+            margin-top:8px;
+        }
+        .meta-pill {
+            display:inline-flex;
+            align-items:center;
+            gap:8px;
+            padding:8px 12px;
+            border-radius:999px;
+            background: linear-gradient(180deg, rgba(123,31,162,0.06), rgba(123,31,162,0.03));
+            color: var(--purple-700);
+            font-weight:700;
+            font-size:0.9rem;
+            border: 1px solid rgba(106,13,173,0.05);
+        }
+
+        /* Assigned pill (separate row, highlighted to indicate a new assignment/update) */
+        .assigned-row { margin-top:10px; }
+        .assigned-pill {
+            display:inline-flex;
+            align-items:center;
+            gap:8px;
+            padding:9px 14px;
+            border-radius:999px;
+            background: linear-gradient(90deg,#ffb74d,#ff9800);
+            color:#663a00;
+            font-weight:800;
+            font-size:0.95rem;
+            border: 1px solid rgba(255,152,0,0.12);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.04);
+        }
+
+        /* Status badge styles */
+        .status-badge {
+          display:inline-block;
+          padding:6px 10px;
+          border-radius:999px;
+          font-weight:800;
+          font-size:0.9rem;
+          color:#fff;
+          box-shadow: 0 6px 18px rgba(15,23,42,0.06);
+        }
+        .status-open { background: linear-gradient(90deg,#ffb74d,#ff9800); }
+        .status-inprogress { background: linear-gradient(90deg,#42a5f5,#1e88e5); }
+        .status-pending { background: linear-gradient(90deg,#90a4ae,#78909c); }
+        .status-resolved { background: linear-gradient(90deg,#66bb6a,#43a047); }
+        .status-read { background: linear-gradient(90deg,#ab47bc,#8e24aa); }
+
+        .updates-row { display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
+
+        /* Congratulations banner shown when an issue transitions to resolved */
+        .congrats-banner {
+            margin-top:14px;
+            padding:12px 14px;
+            border-radius:10px;
+            background: linear-gradient(90deg,#66bb6a,#43a047);
+            color:#fff;
+            font-weight:800;
+            display:flex;
+            gap:12px;
+            align-items:center;
+            box-shadow: 0 8px 30px rgba(34,197,94,0.12);
+            opacity:1;
+        }
+        .update-chip { background: rgba(0,0,0,0.04); padding:8px 12px; border-radius:12px; font-weight:700; color:#222; display:flex; gap:8px; align-items:center; }
+        .update-chip .time { color:var(--muted); font-weight:600; font-size:0.85rem; }
+
+        .latest-update {
+          margin-top:14px;
+          padding:12px 14px;
+          border-radius:10px;
+          display:flex;
+          align-items:center;
+          gap:12px;
+          background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(250,250,250,0.96));
+          border: 1px solid rgba(0,0,0,0.04);
+        }
+        .latest-update .latest-badge { padding:6px 10px; border-radius:8px; font-weight:800; color:#fff; }
+        .latest-badge-read { background: linear-gradient(90deg,#ab47bc,#8e24aa); }
+        .latest-badge-inprogress { background: linear-gradient(90deg,#42a5f5,#1e88e5); }
+        .latest-badge-pending { background: linear-gradient(90deg,#90a4ae,#78909c); }
+        .latest-badge-resolved { background: linear-gradient(90deg,#66bb6a,#43a047); }
+        .latest-badge-mark { background: linear-gradient(90deg,#ffb74d,#ff9800); }
+
+        /* action history timeline */
+        .action-history {
+          margin-top: 22px;
+          position: relative;
+          padding-top: 18px;
+          padding-left: 28px; 
+        }
+        .action-history::before {
+          content: '';
+          position: absolute;
+          left: 12px;
+          top: 8px;
+          bottom: 8px;
+          width: 3px;
+          background: linear-gradient(180deg, rgba(106,13,173,0.06), rgba(106,13,173,0.02));
+          border-radius: 6px;
+        }
+        .action-item {
+          display:flex;
+          justify-content:space-between;
+          gap:12px;
+          padding:12px;
+          border-radius:12px;
+          margin-bottom:12px;
+          background: linear-gradient(180deg, rgba(255,255,255,1), rgba(250,250,250,0.98));
+          border: 1px solid rgba(10,10,10,0.03);
+          box-shadow: 0 6px 14px rgba(12,15,20,0.04);
+          position: relative;
+        }
+        .action-item::before {
+          content: '';
+          position: absolute;
+          left: -20px;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 14px;
+          height: 14px;
+          border-radius: 50%;
+          background: linear-gradient(90deg,#90a4ae,#78909c); /* muted by default */
+          box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        }
+        
+        .action-item.action-inprogress::before,
+        .action-item.action-resolved::before {
+          background: linear-gradient(90deg,#43a047,#2e7d32);
+        }
+        .action-item.action-pending::before {
+          background: linear-gradient(90deg,#ffb74d,#ff9800);
+        }
+        .action-item.action-read::before,
+        .action-item.action-assigned::before {
+          background: linear-gradient(90deg,#8e24aa,#7b1fa2);
+        }
+        .action-meta { color: var(--muted); font-size:0.9rem; }
+        .action-desc { color:#222; font-weight:700 }
+
+        .issue-body {
+            margin-top:18px;
+            color:#222;
+            line-height:1.7;
+            font-size:1rem;
+            padding:12px 6px;
+        }
+
+        .issue-photos {
+            margin-top:5px;
+        }
+        .photo-grid {
+            display:grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap:12px;
+        }
+        .photo-item {
+            position:relative;
+            overflow:hidden;
+            border-radius:10px;
+            border:1px solid rgba(0,0,0,0.06);
+            background:#fff;
+            transition: transform .28s, box-shadow .28s;
+            cursor: zoom-in;
+        }
+        .photo-item img {
+          width:100%;
+          height:160px;
+          object-fit:cover;
+        }
+
+        .action-assigned { margin-top:6px; font-size:0.95rem; color:#333; font-weight:700; }
+
+        .photo-caption {
+            position:absolute;
+            left:8px;
+            bottom:8px;
+            background: rgba(0,0,0,0.5);
+            color:#fff;
+            padding:6px 9px;
+            border-radius:8px;
+            font-size:0.84rem;
+        }
+
+        .actions {
+            margin-top:20px;
+            display:flex;
+            gap:12px;
+            flex-wrap:wrap;
+        }
+
+        .btn-secondary {
+            background:transparent;
+            color:var(--purple-700);
+            border:1px solid rgba(106,13,173,0.12);
+            padding:10px 14px;
+            border-radius:10px;
+            font-weight:700;
+            text-decoration:none;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+
+<div class="view-container" data-issue-id="{{ issue._id }}">
+  <div class="content-wrapper">
+    {% if issue.status == 'Resolved' %}
+      <div id="congrats-banner" class="congrats-banner">
+        <i class="fas fa-check-circle" style="font-size:1.2rem"></i>
+        <div>🎉 <strong>Congratulations!</strong> Your issue has been resolved. Thank you for reporting.</div>
+      </div>
+    {% endif %}
+    <div class="issue-header">
+      <div>
+        <div style="display:flex; gap:12px; align-items:center;">
+          <h1 class="issue-title" style="margin:0">{{ issue.title }}</h1>
+          {# status badge with classes based on issue.status #}
+          {% set st = (issue.status or 'Open')|lower|replace(' ', '') %}
+          {% set st_class = 'status-' + st if st in ['open','inprogress','pending','resolved','read'] else 'status-pending' %}
+          <span id="status-badge" class="status-badge {{ st_class }}">{{ issue.status or 'Open' }}</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-pill">Urgency: {{ issue.urgency  }}</span>
+          <span class="meta-pill">Category: {{ issue.category  }}</span>
+            {% if issue.location_description %}
+            <span class="meta-pill">Location: {{ issue.location_description }}</span>
+            {% endif %}
+        </div>
+
+        <!-- Assigned group row: shown separately below meta-row to make it more prominent -->
+        <div class="assigned-row">
+          {% if issue.assigned_group %}
+            <span id="assigned-pill" class="assigned-pill">Assigned To: {{ issue.assigned_group }}</span>
+          {% else %}
+            <span id="assigned-pill" class="assigned-pill" style="display:none;"></span>
+          {% endif %}
+        </div> 
+        <div class="issue-body">
+           <p>Issue Description: {{ issue.description }}</p>
+        </div>
+        
+    {% if issue.photo_filenames %}
+      <div class="issue-photos">
+        <div class="photo-grid">
+          {% for photo in issue.photo_filenames %}
+            <figure class="photo-item">
+              <img src="{{ url_for('uploaded_file', filename=photo) }}" 
+                   alt="Issue photo {{ loop.index }}">
+              <figcaption class="photo-caption">Photo {{ loop.index }}</figcaption>
+            </figure>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+        
+        {# Recent updates chips (show latest 3 actions) #}
+        {% set actions = issue.get('actions', []) %}
+        {% if actions and actions|length > 0 %}
+          {# sort actions once and reuse #}
+          {% set sorted_actions = actions|sort(attribute='timestamp', reverse=true) %}
+          {% set latest = sorted_actions|first %}
+          {% set lat_text = latest.action %}
+          {# map action text to a compact status key for styling #}
+          {% set lat_key = 'pending' %}
+          {% if 'read' in lat_text|lower() or 'marked as read' in lat_text|lower() %}
+            {% set lat_key = 'read' %}
+          {% elif 'in progress' in lat_text|lower() or 'started' in lat_text|lower() %}
+            {% set lat_key = 'inprogress' %}
+          {% elif 'resolved' in lat_text|lower() or 'closed' in lat_text|lower() %}
+            {% set lat_key = 'resolved' %}
+          {% elif 'assigned' in lat_text|lower() or 'mark' in lat_text|lower() %}
+            {% set lat_key = 'mark' %}
+          {% else %}
+            {% set lat_key = 'pending' %}
+          {% endif %}
+
+        {% endif %}
+
+
+      </div>
+          <!-- <div class="updates-row" aria-label="Recent updates">
+            {% for a in sorted_actions %}
+              {% if loop.index0 < 3 %}
+                {% set text = a.action %}
+                <div class="update-chip">
+                  <span>{{ text }}</span>
+                  <span class="time">• {{ a.timestamp|time_ago }}</span>
+                </div>
+              {% endif %}
+            {% endfor %} -->
+          </div>
+        <!-- <a href="{{ url_for('all_issues') }}" class="btn-secondary">Back to Issues</a>
+      </div> -->
+    </div>
+<!-- 
+    <div class="issue-body">
+      <p>{{ issue.description }}</p>
+    </div> -->
+<!-- 
+    {% if issue.photo_filenames %}
+      <div class="issue-photos">
+        <div class="photo-grid">
+          {% for photo in issue.photo_filenames %}
+            <figure class="photo-item">
+              <img src="{{ url_for('uploaded_file', filename=photo) }}" 
+                   alt="Issue photo {{ loop.index }}">
+              <figcaption class="photo-caption">Photo {{ loop.index }}</figcaption>
+            </figure>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %} -->
+
+    <!-- Action history (admin updates) -->
+    <div id="action-history" class="action-history">
+      <h3 style="margin:0 0 10px 0; color:var(--purple-700);">Action History</h3>
+      {% set actions = issue.get('actions', []) %}
+      {% if actions and actions|length > 0 %}
+        {% for a in actions|sort(attribute='timestamp', reverse=true) %}
+          {% set txt = a.action|lower() %}
+          {% set a_key = 'pending' %}
+          {% if 'read' in txt or 'marked as read' in txt %}
+            {% set a_key = 'read' %}
+          {% elif 'in progress' in txt or 'started' in txt or 'work started' in txt %}
+            {% set a_key = 'inprogress' %}
+          {% elif 'resolved' in txt or 'closed' in txt %}
+            {% set a_key = 'resolved' %}
+          {% elif 'assigned' in txt or 'assigned to' in txt %}
+            {% set a_key = 'assigned' %}
+          {% else %}
+            {% set a_key = 'pending' %}
+          {% endif %}
+          <div class="action-item action-{{ a_key }}">
+            <div>
+              <div class="action-desc">{{ a.action }}</div>
+              <div class="action-meta">by {{ a.actor or 'Admin' }}</div>
+              {% if a.get('assigned_group') %}
+                <div class="action-assigned">Assigned to: <strong>{{ a.assigned_group }}</strong></div>
+              {% endif %}
+            </div>
+            <!-- <div class="action-meta">{{ a.timestamp|time_ago }}</div> -->
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="action-item">
+          <div class="action-desc">No actions recorded yet.</div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+  {% block scripts %}
+  <script>
+  /* Poll the issue JSON endpoint every 8s and refresh status, assigned pill, latest update and action history */
+  (function(){
+    const container = document.querySelector('.view-container');
+    if(!container) return;
+    const issueId = container.dataset.issueId;
+    const statusBadge = document.getElementById('status-badge');
+    const assignedPill = document.getElementById('assigned-pill');
+    const latestBadge = document.getElementById('latest-badge');
+    const latestActor = document.getElementById('latest-actor');
+    const latestTime = document.getElementById('latest-time');
+    const actionHistory = document.getElementById('action-history');
+    const updatesRow = document.querySelector('.updates-row');
+
+    function actionKey(action){
+      const a = (action||'').toLowerCase();
+      if(a.includes('read') || a.includes('marked as read')) return 'read';
+      if(a.includes('in progress') || a.includes('started') || a.includes('work started')) return 'inprogress';
+      if(a.includes('resolved') || a.includes('closed')) return 'resolved';
+      if(a.includes('assign')) return 'assigned';
+      return 'pending';
+    }
+
+    function timeAgo(iso){
+      if(!iso) return '';
+      const d = new Date(iso);
+      const diff = Math.floor((Date.now() - d.getTime())/1000);
+      if(diff < 60) return diff + 's ago';
+      if(diff < 3600) return Math.floor(diff/60) + 'm ago';
+      if(diff < 86400) return Math.floor(diff/3600) + 'h ago';
+      return Math.floor(diff/86400) + 'd ago';
+    }
+
+    async function refresh(){
+      try{
+        const res = await fetch(`/issue/${issueId}/json`);
+        if(!res.ok) return;
+        const data = await res.json();
+
+        // status badge
+        if(statusBadge && data.status !== undefined){
+          const newStatus = data.status || 'Open';
+          statusBadge.textContent = newStatus;
+          // normalize class
+          const cls = 'status-' + newStatus.toLowerCase().replace(/\s+/g,'');
+          statusBadge.className = 'status-badge ' + cls;
+
+          // show congratulations banner when this issue becomes Resolved
+          if(prevStatus !== 'Resolved' && newStatus === 'Resolved'){
+            showCongrats('🎉 Congratulations! Your issue has been resolved. Thank you for reporting.');
+          }
+          prevStatus = newStatus;
+        }
+
+        // assigned pill
+        if(assignedPill){
+          if(data.assigned_group){
+            assignedPill.style.display = 'inline-flex';
+            assignedPill.textContent = 'Assigned: ' + data.assigned_group;
+          } else {
+            assignedPill.style.display = 'none';
+          }
+        }
+
+        // latest
+        if(latestBadge && data.actions && data.actions.length > 0){
+          const latest = data.actions[0];
+          latestBadge.textContent = latest.action || '';
+          // update badge class
+          const lk = actionKey(latest.action);
+          latestBadge.className = 'latest-badge latest-badge-' + (lk === 'assigned' ? 'mark' : lk);
+          if(latestActor) latestActor.textContent = 'Updated by ' + (latest.actor || 'Admin');
+          if(latestTime) latestTime.textContent = timeAgo(latest.timestamp);
+        }
+
+        // action history - rebuild latest items (show recent entries)
+        if(actionHistory && data.actions){
+          // clear existing action items (leave h3)
+          const h3 = actionHistory.querySelector('h3');
+          actionHistory.innerHTML = '';
+          actionHistory.appendChild(h3);
+          for(const a of data.actions){
+            const ak = actionKey(a.action);
+            const item = document.createElement('div');
+            item.className = 'action-item action-' + ak;
+            const left = document.createElement('div');
+            const desc = document.createElement('div'); desc.className = 'action-desc'; desc.textContent = a.action || '';
+            const meta = document.createElement('div'); meta.className = 'action-meta'; meta.textContent = 'by ' + (a.actor || 'Admin');
+            left.appendChild(desc); left.appendChild(meta);
+            if(a.assigned_group){ const ag = document.createElement('div'); ag.className = 'action-assigned'; ag.innerHTML = 'Assigned to: <strong>' + a.assigned_group + '</strong>'; left.appendChild(ag); }
+            const right = document.createElement('div'); right.className = 'action-meta'; right.textContent = timeAgo(a.timestamp);
+            item.appendChild(left); item.appendChild(right);
+            actionHistory.appendChild(item);
+          }
+        }
+
+        // updates chips (recent 3)
+        if(updatesRow && data.actions){
+          updatesRow.innerHTML = '';
+          for(let i=0;i<Math.min(3,data.actions.length); i++){
+            const a = data.actions[i];
+            const chip = document.createElement('div'); chip.className = 'update-chip';
+            const span = document.createElement('span'); span.textContent = a.action;
+            const time = document.createElement('span'); time.className = 'time'; time.textContent = '• ' + timeAgo(a.timestamp);
+            chip.appendChild(span); chip.appendChild(time);
+            updatesRow.appendChild(chip);
+          }
+        }
+
+      }catch(e){
+        console.error('refresh issue', e);
+      }
+    }
+
+    // track previous status so we can detect transitions (e.g., to Resolved)
+    let prevStatus = statusBadge ? statusBadge.textContent.trim() : '';
+
+    function showCongrats(msg){
+      if(document.getElementById('congrats-banner')) return;
+      const b = document.createElement('div');
+      b.id = 'congrats-banner';
+      b.className = 'congrats-banner';
+      b.innerHTML = '<i class="fas fa-check-circle" style="font-size:1.2rem"></i><div>' + msg + '</div>';
+      if(container) container.prepend(b);
+    }
+
+    // initial refresh and periodic polling
+    refresh();
+    setInterval(refresh, 8000);
+  </script>
+  {% endblock %}

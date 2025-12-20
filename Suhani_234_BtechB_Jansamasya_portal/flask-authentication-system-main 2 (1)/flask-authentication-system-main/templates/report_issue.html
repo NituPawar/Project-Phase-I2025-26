@@ -1,0 +1,692 @@
+{% extends "base.html" %}
+{% block title %}Report Issue{% endblock %}
+{% block content %}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+
+<style>
+    
+    .error { color: red; font-size: 0.9em; margin-top: 4px; }
+
+    #locationMap { height: 320px; border: 2px solid #ccc; border-radius: 8px; }
+
+    .upload-box {
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        padding: 5px; border: 2px dashed #ccc; border-radius: 6px; cursor: pointer; text-align: center;
+    }
+
+    .upload-box img { max-width: 80%; max-height: 100px; border-radius: 6px; display: none; }
+
+    /* urgency buttons: larger, color-coded */
+    .urgency-group { 
+        margin-top: 14px; 
+    }
+    .urgency-label {
+        display: block;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 5px;
+        font-size: 1rem;
+    }
+    .urgency-options {
+        display: flex;
+        gap: 14px;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-top: 5px;
+    }
+    .urgency-options input[type="radio"] { 
+        display: none; 
+    }
+
+    /* Base button styles */
+    .urgency-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 16px;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 1.05rem;
+        color: #fff;
+        cursor: pointer;
+        transition: transform .14s ease, box-shadow .14s ease, opacity .14s ease;
+        border: 0;
+        box-shadow: 0 6px 18px rgba(16,24,40,0.08);
+        user-select: none;
+        text-transform: none;
+        letter-spacing: 0.2px;
+    }
+
+    /* Color variants */
+    .urgency-btn.low { 
+        background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+        color: #073b10;
+    }
+    .urgency-btn.low i { color: rgba(5,60,20,0.95); }
+    .urgency-btn.medium { 
+        background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+        color: #3e2b00;
+    }
+    .urgency-btn.medium i { color: rgba(64,40,0,0.95); }
+    .urgency-btn.high { 
+        background: linear-gradient(135deg, #ff5f6d 0%, #e74c3c 100%);
+        color: #3b0a0a;
+    }
+    .urgency-btn.high i { color: rgba(80,10,10,0.95); }
+
+    /* Checked/Active state */
+    .urgency-options input[type="radio"]:checked + .urgency-btn {
+        transform: translateY(-6px) scale(1.06);
+        box-shadow: 0 22px 48px rgba(16,24,40,0.18);
+        outline: 3px solid rgba(255,255,255,0.12);
+    }
+
+    /* Hover state */
+    .urgency-btn:hover { 
+        transform: translateY(-4px) scale(1.02);
+        box-shadow: 0 14px 28px rgba(16,24,40,0.12);
+        filter: brightness(1.03);
+    }
+
+    /* Active/Press state */
+    .urgency-btn:active { 
+        transform: translateY(-2px);
+    }
+    /* location suggestions */
+    .suggestions {
+        position: relative;
+    }
+    .suggestions-list {
+        position: absolute;
+        left: 0;
+        right: 0;
+        background: white;
+        border: 1px solid #ddd;
+        max-height: 160px;
+        overflow:auto;
+        z-index: 50;
+        border-radius: 4px;
+    }
+    .suggestion-item { padding: 8px 10px; cursor: pointer; }
+    .suggestion-item:hover { background:#f5f5f5; }
+
+    /* Search box container styling */
+    .map-search input { box-shadow: 0 6px 18px rgba(16,24,40,0.04); }
+    #searchResults { position: relative; max-width: 600px; }
+
+    /* Responsive layout for map search */
+    @media (max-width: 520px) {
+        .map-search { flex-direction: column; align-items: stretch; }
+        .map-search button { width: 100%; }
+        #searchResults { left: 0; right: 0; }
+    }
+</style>
+
+<div class="container">
+
+    <h1>Report a Municipal Issue</h1>
+
+    <form id="issueForm" method="POST" action="{{ url_for('report_issue') }}" enctype="multipart/form-data" novalidate>
+
+        <div class="form-grid">
+
+            <!-- Issue Title -->
+            <div class="form-group">
+                <label>Issue Title <span style="color:red">*</span></label>
+                <input type="text" id="title" name="title" required>
+                <span class="error" id="titleError"></span>
+            </div>
+
+            <!-- Description -->
+            <div class="form-group">
+                <label>Issue Description <span style="color:red">*</span></label>
+                <textarea id="description" name="description" rows="4" required></textarea>
+                <span class="error" id="descError"></span>
+            </div>
+
+            <!-- Category -->
+            <div class="form-group">
+                <label>Issue Category <span style="color:red">*</span></label>
+                <select id="category" name="category" required>
+                    <option value="">Select Category</option>
+                    
+                    <optgroup label="Road & Infrastructure">
+                        <option value="pothole">Pothole</option>
+                        <option value="road_damage">Damaged Road</option>
+                        <option value="footpath">Broken Footpath</option>
+                        <option value="traffic_sign">Missing/Damaged Traffic Sign</option>
+                        <option value="speed_breaker">Missing/Excessive Speed Breaker</option>
+                    </optgroup>
+
+                    <optgroup label="Sanitation & Waste">
+                        <option value="garbage">Garbage Accumulation</option>
+                        <option value="overflowing_bin">Overflowing Dustbin</option>
+                        <option value="street_cleaning">Street Not Cleaned</option>
+                        <option value="public_toilet">Public Toilet Issue</option>
+                    </optgroup>
+
+                    <optgroup label="Water Supply">
+                        <option value="water_leakage">Water Leakage</option>
+                        <option value="water_contamination">Water Contamination</option>
+                        <option value="water_shortage">Water Shortage</option>
+                        <option value="sewage">Sewage Problem</option>
+                    </optgroup>
+
+                    <optgroup label="Electricity">
+                        <option value="streetlight">Streetlight Not Working</option>
+                        <option value="dangerous_wiring">Dangerous Wiring</option>
+                        <option value="power_outage">Power Outage</option>
+                    </optgroup>
+
+                    <optgroup label="Drainage">
+                        <option value="blocked_drain"> Blocked Drain </option>
+                        <option value="water_logging"> Water Logging </option>
+                        <option value="open_drain"> Open Drain Cover </option>
+                    </optgroup>
+
+                    <optgroup label="Parks & Public Spaces">
+                        <option value="park_maintenance">Park Maintenance</option>
+                        <option value="play_equipment">Damaged Play Equipment</option>
+                        <option value="public_building">Public Building Issue</option>
+                    </optgroup>
+                </select>
+                <span class="error" id="categoryError"></span>
+            </div>
+
+            <!-- Location Description -->
+            <div class="form-group">
+                <label>Location Description <span style="color:red">*</span></label>
+                <div class="suggestions" style="position:relative;">
+                    <textarea id="location_desc" name="location_description" rows="3" required autocomplete="off"></textarea>
+                    <div id="locationSuggestions" class="suggestions-list" style="display:none;"></div>
+                </div>
+                <span class="error" id="locationError"></span>
+            </div>
+
+            <!-- Upload -->
+            <div class="form-group">
+                <label>Upload Photos (Max 5MB JPG/PNG) <span style="color:red">*</span></label>
+
+                <label class="upload-box" for="photos">
+                    <div id="uploadPlaceholder">
+                        <i class="fas fa-camera"></i>
+                        <p>Click to upload</p>
+                    </div>
+                    <img id="previewImage">
+                    <input type="file" id="photos" name="photos" accept="image/png,image/jpeg" multiple required>
+                </label>
+
+                <span class="error" id="photoError"></span>
+            </div>
+
+            <!-- Urgency Level -->
+            <div class="form-group urgency-group">
+              <label class="urgency-label">Urgency Level <span style="color:red">*</span></label>
+              <div class="urgency-options">
+                <input type="radio" id="urgency_low" name="urgency" value="Low" {% if urgency == 'Low' %}checked{% endif %}>
+                <label for="urgency_low" class="urgency-btn low"><i class="fas fa-leaf"></i> Low</label>
+
+                <input type="radio" id="urgency_medium" name="urgency" value="Medium" {% if urgency == 'Medium' %}checked{% endif %}>
+                <label for="urgency_medium" class="urgency-btn medium"><i class="fas fa-exclamation-circle"></i> Medium</label>
+
+                <input type="radio" id="urgency_high" name="urgency" value="High" {% if urgency == 'High' %}checked{% endif %}>
+                <label for="urgency_high" class="urgency-btn high"><i class="fas fa-fire"></i> High</label>
+              </div>
+            </div>
+
+        </div>
+
+        <!-- MAP -->
+        <label>Pin Location on Map <span style="color:red">*</span></label>
+
+                <!-- Location search: user can type an address and find it on the map -->
+                <div class="map-search" style="margin:8px 0; display:flex; gap:8px; align-items:center; position:relative;">
+                    <input id="locationSearch" type="text" placeholder="Search location (e.g., 'MG Road, Pune')" style="flex:1; padding:8px 12px; border-radius:6px; border:1px solid #ddd" autocomplete="off">
+                    <button type="button" id="locationSearchBtn" class="btn btn-secondary" style="padding:8px 12px;border-radius:6px;">Search</button>
+                    <div id="searchResults" class="suggestions-list" style="display:none; margin-top:8px; max-width:480px; position:absolute; left:0; right:0; z-index:80;"></div>
+                </div>
+
+        <div style="margin:8px 0;">
+            <label style="margin-right:12px;">
+                <input type="radio" name="location_mode" id="locNew" value="new" checked> Pin another location
+            </label>
+            <label>
+                <input type="radio" name="location_mode" id="locProfile" value="profile"> Use my registered address
+            </label>
+            {% if profile_address %}
+                <div style="font-size:0.95rem; color:#444; margin-top:6px;">Registered address: <em>{{ profile_address }}</em></div>
+            {% endif %}
+        </div>
+        <div id="locationMap"></div>
+        <input type="hidden" id="latitude" name="latitude">
+        <input type="hidden" id="longitude" name="longitude">
+
+        <span class="error" id="mapError"></span>
+
+        <button type="submit" class="btn btn-primary mt-4">Submit Report</button>
+
+    </form>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+<script src="https://unpkg.com/@turf/turf/turf.min.js"></script>
+
+{% if GOOGLE_MAPS_API_KEY %}
+<script src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_API_KEY }}&libraries=places"></script>
+{% endif %}
+
+<!-- map configuration exposed via data attributes to avoid inline Jinja in JS -->
+<div id="map-config" data-using-google="{{ 'true' if GOOGLE_MAPS_API_KEY else 'false' }}" data-google-key="{{ GOOGLE_MAPS_API_KEY }}" style="display:none"></div>
+
+<script>
+
+// Maharashtra Bounds
+const maharashtraBounds = [
+    [15.6, 72.6],
+    [22.2, 80.9]
+];
+
+const map = L.map('locationMap');
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+map.fitBounds(maharashtraBounds);
+// Removed setMaxBounds to allow panning outside Maharashtra when users want to report other locations
+
+let marker, boundary;
+// read config from DOM
+const mapConfigEl = document.getElementById('map-config');
+const USING_GOOGLE = mapConfigEl ? mapConfigEl.dataset.usingGoogle === 'true' : false;
+
+// Load Maharashtra GEOJSON
+fetch("{{ url_for('static', filename='maharashtra.geojson') }}")
+.then(res => res.json())
+.then(data => {
+    boundary = L.geoJSON(data).addTo(map);
+});
+
+// Map click
+map.on("click", function(e) {
+    const latlng = e.latlng;
+    // Always accept clicked locations; clear previous error messages
+    document.getElementById("mapError").innerText = "";
+
+    if (marker) map.removeLayer(marker);
+    // create draggable marker
+    marker = L.marker(latlng, {draggable: true}).addTo(map);
+
+    // when dragging ends, update fields and suggestions
+    marker.on('dragend', function(ev) {
+        const m = ev.target.getLatLng();
+        updateLatLngAndSuggestions(m.lat, m.lng);
+    });
+
+    updateLatLngAndSuggestions(latlng.lat, latlng.lng);
+});
+
+// list of major Maharashtra cities for nearest-suggestion (name, lat, lng)
+const maharashtraPlaces = [
+    {name: 'Mumbai', lat: 19.075983, lng: 72.877655},
+    {name: 'Pune', lat: 18.520430, lng: 73.856744},
+    {name: 'Nagpur', lat: 21.145800, lng: 79.088154},
+    {name: 'Nashik', lat: 19.997453, lng: 73.789802},
+    {name: 'Aurangabad', lat: 19.876165, lng: 75.343314},
+    {name: 'Thane', lat: 19.218331, lng: 72.978088},
+    {name: 'Kolhapur', lat: 16.705001, lng: 74.239998},
+    {name: 'Solapur', lat: 17.659919, lng: 75.906391},
+    {name: 'Amravati', lat: 20.9340, lng: 77.7560},
+    {name: 'Akola', lat: 20.7051, lng: 76.9980}
+];
+
+function updateLatLngAndSuggestions(lat, lng) {
+    document.getElementById("latitude").value = lat;
+    document.getElementById("longitude").value = lng;
+    document.getElementById("mapError").innerText = '';
+    const descField = document.getElementById('location_desc');
+    if (descField) descField.value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+
+    if (USING_GOOGLE && typeof google !== 'undefined' && google.maps && google.maps.Geocoder) {
+        try {
+            const geocoder = new google.maps.Geocoder();
+            geocoder.geocode({location: {lat: parseFloat(lat), lng: parseFloat(lng)}}, function(results, status){
+                if (status === 'OK' && results && results[0]) {
+                    if (descField) descField.value = results[0].formatted_address;
+                }
+            });
+        } catch (err) {
+            console.warn('google reverse geocode failed', err);
+        }
+    } else {
+        // fallback: Nominatim reverse geocode
+        try {
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`)
+                .then(r => r.json())
+                .then(data => {
+                    if (data && data.display_name) {
+                        if (descField) descField.value = data.display_name;
+                    }
+                }).catch(err => console.warn('reverse geocode failed', err));
+        } catch (err) {
+            console.warn('reverse request error', err);
+        }
+    }
+}
+
+// Location description autocomplete: suggest matching places as user types
+(function(){
+    const input = document.getElementById('location_desc');
+    const list = document.getElementById('locationSuggestions');
+
+    function showSuggestions(matches) {
+        if (!matches || matches.length === 0) { list.style.display = 'none'; list.innerHTML = ''; return; }
+        list.innerHTML = matches.map(m => `<div class="suggestion-item" data-lat="${m.lat}" data-lng="${m.lng}">${m.name}</div>`).join('');
+        list.style.display = 'block';
+    }
+
+    input.addEventListener('input', function(e){
+        const v = this.value.trim().toLowerCase();
+        if (!v || v.length < 2) { showSuggestions([]); return; }
+        // first try to match from static list
+        const matches = maharashtraPlaces.filter(p => p.name.toLowerCase().includes(v)).slice(0,6);
+        if (matches.length) { showSuggestions(matches); return; }
+        // fallback: call Nominatim search (limit 6) without state restriction
+        fetch(`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=6&q=${encodeURIComponent(v)}`)
+            .then(r => r.json())
+            .then(results => {
+                const mapped = (results || []).map(r => ({name: r.display_name, lat: parseFloat(r.lat), lng: parseFloat(r.lon)}));
+                showSuggestions(mapped);
+            }).catch(err => { console.warn('geocode search failed', err); showSuggestions([]); });
+    });
+
+    // click on suggestion
+    list.addEventListener('click', function(e){
+        const target = e.target.closest('.suggestion-item');
+        if (!target) return;
+        const name = target.textContent;
+        const lat = parseFloat(target.getAttribute('data-lat'));
+        const lng = parseFloat(target.getAttribute('data-lng'));
+        // set the textarea value
+        input.value = name;
+        showSuggestions([]);
+
+        // place marker at selected location and update fields
+        const latlng = L.latLng(lat, lng);
+        if (marker) map.removeLayer(marker);
+        marker = L.marker(latlng, {draggable:true}).addTo(map);
+        map.setView(latlng, 12);
+        marker.on('dragend', function(ev){ const m = ev.target.getLatLng(); updateLatLngAndSuggestions(m.lat, m.lng); });
+        updateLatLngAndSuggestions(lat, lng);
+    });
+
+    // hide suggestions when clicking elsewhere
+    document.addEventListener('click', function(e){
+        if (!e.target.closest('.suggestions')) {
+            list.style.display = 'none';
+        }
+    });
+})();
+
+// Location search: search input + geocode (Nominatim fallback; Google when available)
+(function(){
+    const searchInput = document.getElementById('locationSearch');
+    const searchBtn = document.getElementById('locationSearchBtn');
+    const searchResults = document.getElementById('searchResults');
+
+    function showResults(matches) {
+        if (!matches || matches.length === 0) { searchResults.style.display = 'none'; searchResults.innerHTML = ''; return; }
+        searchResults.innerHTML = matches.map(m => `<div class="suggestion-item" data-lat="${m.lat}" data-lng="${m.lng}">${m.name}</div>`).join('');
+        searchResults.style.display = 'block';
+    }
+
+    // If Google Places is enabled, attach Autocomplete for better experience
+    if (USING_GOOGLE && typeof google !== 'undefined' && google.maps && google.maps.places && google.maps.places.Autocomplete) {
+        try {
+            const ac = new google.maps.places.Autocomplete(searchInput, {componentRestrictions: {country: 'in'}});
+            ac.setFields(['formatted_address', 'geometry']);
+            ac.addListener('place_changed', function(){
+                const place = ac.getPlace();
+                if (!place.geometry || !place.geometry.location) return;
+                const loc = place.geometry.location;
+                const lat = loc.lat(); const lng = loc.lng();
+                // Accept any location selected from Google Places
+                placeMarkerAt(lat, lng, place.formatted_address || searchInput.value);
+            });
+        } catch (err) { console.warn('attach autocomplete failed', err); }
+    }
+
+    function placeMarkerAt(lat, lng, label) {
+        const latlng = L.latLng(lat, lng);
+        if (marker) map.removeLayer(marker);
+        marker = L.marker(latlng, {draggable:true}).addTo(map);
+        marker.on('dragend', function(ev){ const m = ev.target.getLatLng(); updateLatLngAndSuggestions(m.lat, m.lng); });
+        map.setView(latlng, 13);
+        updateLatLngAndSuggestions(lat, lng);
+        if (label && document.getElementById('location_desc')) document.getElementById('location_desc').value = label;
+        document.getElementById('locNew').checked = true; // ensure pin-new is selected
+    }
+
+    // Note: isInsideMaha retained for future usage; currently, we accept any user-selected location.
+    function isInsideMaha(lat, lng) {
+        if (!boundary) return true;
+        const pt = turf.point([parseFloat(lng), parseFloat(lat)]);
+        return turf.booleanPointInPolygon(pt, boundary.toGeoJSON());
+    }
+
+    // handle click on results list
+    searchResults.addEventListener('click', function(e){
+        const t = e.target.closest('.suggestion-item');
+        if (!t) return;
+        const lat = parseFloat(t.getAttribute('data-lat'));
+        const lng = parseFloat(t.getAttribute('data-lng'));
+        placeMarkerAt(lat, lng, t.textContent);
+        searchResults.style.display = 'none';
+        searchInput.value = t.textContent;
+    });
+
+    // search button click
+    searchBtn.addEventListener('click', function(){
+        const q = (searchInput.value || '').trim();
+        if (!q) { searchInput.focus(); return; }
+
+        // If using Google Places autocomplete is available, prefer that
+        if (USING_GOOGLE && typeof google !== 'undefined' && google.maps && google.maps.places) {
+            try {
+                const geocoder = new google.maps.Geocoder();
+                geocoder.geocode({address: q}, function(results, status) {
+                    if (status === 'OK' && results && results[0]) {
+                        const loc = results[0].geometry.location;
+                        const lat = loc.lat();
+                        const lng = loc.lng();
+                        // Accept the location regardless of state boundaries
+                        placeMarkerAt(lat, lng, results[0].formatted_address || q);
+                        document.getElementById('mapError').innerText = '';
+                        return;
+                    }
+                    // no results or error: fall back to Nominatim search (below). Do not show error alerts.
+                });
+                    return; // allow fallback to continue after catching errors
+            } catch (err) { console.warn('google geocode failed', err); }
+        }
+
+        // Nominatim search fallback
+        fetch(`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=6&q=${encodeURIComponent(q)}`)
+            .then(r => r.json())
+            .then(results => {
+                if (!results || results.length === 0) {
+                    // no results — quietly continue and show no message
+                    document.getElementById('mapError').innerText = '';
+                    return;
+                }
+                // map to suggestion format
+                const mapped = results.map(r => ({ name: r.display_name, lat: +r.lat, lng: +r.lon }));
+                // If there is a clear best (exact match or only one), place marker; otherwise show results
+                if (mapped.length === 1) {
+                    // accept location even if outside Maharashtra
+                    placeMarkerAt(mapped[0].lat, mapped[0].lng, mapped[0].name);
+                    document.getElementById('mapError').innerText = '';
+                } else {
+                    showResults(mapped);
+                    document.getElementById('mapError').innerText = '';
+                }
+            }).catch(err => { console.warn('search error', err); /* no UI alerts; let user continue */ });
+    });
+
+    // allow enter to search
+    searchInput.addEventListener('keypress', function(e){ if (e.key === 'Enter') { e.preventDefault(); searchBtn.click(); } });
+    // hide searchResults when clicked outside
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('#locationSearch') && !e.target.closest('#searchResults')) {
+            searchResults.style.display = 'none';
+        }
+    });
+})();
+
+// Handle use-profile vs pin-new selection
+(function(){
+    const locProfile = document.getElementById('locProfile');
+    const locNew = document.getElementById('locNew');
+    const profileAddress = `{{ profile_address|e }}`;
+
+    function geocodeAndPlace(address) {
+        if (!address) {
+            // No profile address, fall back to manual pin mode
+            locNew.checked = true;
+            return;
+        }
+        const q = encodeURIComponent(address);
+        fetch(`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=${q}`)
+            .then(r => r.json())
+            .then(results => {
+                if (!results || results.length === 0) {
+                    // Geocode failed for profile address; fall back to manual pin mode
+                    locNew.checked = true;
+                    document.getElementById('mapError').innerText = '';
+                    return;
+                }
+                const r0 = results[0];
+                const lat = parseFloat(r0.lat);
+                const lng = parseFloat(r0.lon);
+                const latlng = L.latLng(lat, lng);
+                if (marker) map.removeLayer(marker);
+                marker = L.marker(latlng, {draggable:true}).addTo(map);
+                marker.on('dragend', function(ev){ const m = ev.target.getLatLng(); updateLatLngAndSuggestions(m.lat, m.lng); });
+                map.setView(latlng, 13);
+                updateLatLngAndSuggestions(lat, lng);
+            }).catch(err => { console.warn('geocode error', err); locNew.checked = true; });
+    }
+
+    if (locProfile) {
+        locProfile.addEventListener('change', function(){
+            if (this.checked) geocodeAndPlace(profileAddress);
+        });
+    }
+    if (locNew) {
+        locNew.addEventListener('change', function(){
+            if (this.checked) {
+                // allow user to pin manually; clear previous map error
+                document.getElementById('mapError').innerText = '';
+            }
+        });
+    }
+})();
+
+
+// Urgency Buttons
+document.querySelectorAll(".urgency").forEach(btn => {
+    btn.addEventListener("click", () => {
+        document.querySelectorAll(".urgency").forEach(b => b.classList.remove("selected"));
+        btn.classList.add("selected");
+        document.getElementById("urgency").value = btn.dataset.value;
+    });
+});
+
+
+// Image Preview + Validation
+document.getElementById("photos").addEventListener("change", function () {
+    const file = this.files[0];
+    const preview = document.getElementById("previewImage");
+    const placeholder = document.getElementById("uploadPlaceholder");
+
+    if (!file) return;
+
+    const sizeMB = file.size / 1024 / 1024;
+
+    if (sizeMB > 5 || !["image/jpeg", "image/png"].includes(file.type)) {
+        document.getElementById("photoError").innerText = "Only JPG/PNG under 5MB allowed.";
+        this.value = "";
+        preview.style.display = "none";
+        placeholder.style.display = "block";
+        return;
+    }
+
+    placeholder.style.display = "none";
+    preview.style.display = "block";
+
+    const reader = new FileReader();
+    reader.onload = e => preview.src = e.target.result;
+    reader.readAsDataURL(file);
+
+    document.getElementById("photoError").innerText = "";
+});
+
+// Full Form Validation
+document.getElementById("issueForm").addEventListener("submit", function(e) {
+    let valid = true;
+
+    e.preventDefault();
+
+    // Title validation
+    const title = document.getElementById("title").value.trim();
+    if (!/^[A-Za-z0-9\s,.-]{5,100}$/.test(title)) {
+        document.getElementById("titleError").innerText =
+            "Enter a valid title (5–100 characters).";
+        valid = false;
+    } else document.getElementById("titleError").innerText = "";
+
+    // Description validation
+    const desc = document.getElementById("description").value.trim();
+    if (desc.length < 10 || /^[0-9\s]+$/.test(desc)) {
+        document.getElementById("descError").innerText =
+            "Description must be at least 10 characters and meaningful.";
+        valid = false;
+    } else document.getElementById("descError").innerText = "";
+
+    // Category validation
+    if (!document.getElementById("category").value) {
+        document.getElementById("categoryError").innerText = "Select a category.";
+        valid = false;
+    } else document.getElementById("categoryError").innerText = "";
+
+    // Location description
+    const loc = document.getElementById("location_desc").value.trim();
+    if (!/^[A-Za-z0-9\s,.-]{5,200}$/.test(loc)) {
+        document.getElementById("locationError").innerText = "Enter valid location details.";
+        valid = false;
+    } else document.getElementById("locationError").innerText = "";
+
+    // Map selection: require pinned location (no state restriction)
+    const latVal = document.getElementById("latitude").value;
+    const lngVal = document.getElementById("longitude").value;
+    if (!latVal || !lngVal) {
+        document.getElementById("mapError").innerText = "Please pin a location on the map.";
+        valid = false;
+    } else {
+        // accept lat/lng from the user; clear map error
+        document.getElementById("mapError").innerText = "";
+    }
+
+    // Photo validation
+    const photo = document.getElementById("photos").files[0];
+    if (!photo) {
+        document.getElementById("photoError").innerText = "Upload an image.";
+        valid = false;
+    }
+
+    // If all valid → Submit normally to Flask
+    if (valid) this.submit();
+});
+
+</script>
+
+{% endblock %}

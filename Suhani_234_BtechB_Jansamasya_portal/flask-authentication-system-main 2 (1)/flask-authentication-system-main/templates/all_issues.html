@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}All Issues{% endblock %}
+{% block content %}
+    <h1>All Reported Issues</h1>
+    
+    
+    {% if issues %}
+        <table border="1">
+            <tr>
+                <th>Title</th>
+                <th>Reported By</th>
+                <th>Status</th>
+                <th>Date Reported</th>
+                <th>Photos</th>
+                <th>Actions</th>
+            </tr>
+            {% for issue in issues %}
+            <tr>
+                <td>{{ issue.title }}</td>
+                <td>{{ issue.author.name }}</td>
+                <td>{{ issue.status }}</td>
+                <td>{{ issue.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td>
+                    {% if issue.photo_filenames %}
+                        {% for filename in issue.photo_filenames %}
+                            <img src="{{ url_for('static', filename='uploads/' ~ filename) }}" alt="Issue Photo" style="max-height: 100px; max-width: 100px;"/>
+                        {% endfor %}
+                    {% else %}
+                        No photos
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="/issue/{{ issue.id }}">View</a> |
+                    <a href="/accept-issue/{{ issue.id }}" onclick="return confirm('Are you sure you want to accept this issue?');">Accept</a> |
+                    <a href="/delete-issue/{{ issue.id }}" onclick="return confirm('Are you sure you want to delete this issue?');">Delete</a> |
+                    <a href="/respond-issue/{{ issue.id }}">Respond</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>No issues have been reported yet.</p>
+    {% endif %}
+{% endblock %}

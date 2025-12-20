@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+{% block title %}All Issues - Admin{% endblock %}
+{% block head %}
+<style>
+    .issues-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        background-color: white;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .issues-table th {
+        background-color: #667bc6;
+        color: white;
+        padding: 12px;
+        text-align: left;
+        font-weight: 600;
+    }
+    .issues-table td {
+        padding: 12px;
+        border-bottom: 1px solid #ddd;
+    }
+    .issues-table tr:hover {
+        background-color: #f5f5f5;
+    }
+    .photo-cell {
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+    }
+    .photo-cell img {
+        max-height: 80px;
+        max-width: 80px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    .action-links {
+        display: flex;
+        gap: 8px;
+    }
+    .action-links a {
+        padding: 5px 10px;
+        background-color: #667bc6;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        font-size: 12px;
+    }
+    .action-links a:hover {
+        background-color: #5564a1;
+    }
+    .action-links a.delete {
+        background-color: #dc3545;
+    }
+    .action-links a.delete:hover {
+        background-color: #c82333;
+    }
+    .assign-form {
+        display: flex;
+        gap: 5px;
+    }
+    .assign-form select {
+        padding: 5px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 12px;
+    }
+    .assign-form button {
+        padding: 5px 10px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+    }
+    .assign-form button:hover {
+        background-color: #218838;
+    }
+    .no-issues {
+        text-align: center;
+        padding: 40px;
+        color: #666;
+        font-size: 16px;
+    }
+    /* status / urgency badges */
+    .status-badge, .urgency-badge {
+        padding: 4px 8px;
+        border-radius: 3px;
+        font-weight: 600;
+        display: inline-block;
+    }
+    .status-resolved { background-color: #d4edda; color: #155724; }
+    .status-open { background-color: #fff3cd; color: #856404; }
+    .status-inprogress { background-color: #dbeeff; color: #0b63c6; }
+    .status-pending { background-color: #f3f4f6; color: #6b7280; }
+    .urgency-high { background-color: #f8d7da; color: #721c24; }
+    .urgency-medium { background-color: #fff3cd; color: #856404; }
+    .urgency-low { background-color: #d1ecf1; color: #0c5460; }
+    /* status form */
+    .status-form select {
+        padding: 6px 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 0.95rem;
+        min-width: 150px;
+        background: white;
+    }
+</style>
+{% endblock %}
+{% block content %}
+    <div class="admin-header">
+        <h1>All Reported Issues</h1>
+        <div class="admin-actions">
+            <a href="{{ url_for('admin_dashboard') }}" class="btn-dashboard">← Back to Dashboard</a>
+        </div>
+    </div>
+    {% if selected_user %}
+        <div style="margin-bottom:12px; display:flex; gap:12px; align-items:center; justify-content:space-between;">
+            <div>
+                <h2 style="margin:0;">Issues for {{ selected_user.name or selected_user.email }}</h2>
+                <div style="color:var(--muted); font-size:0.95rem;">{{ selected_user.email }}</div>
+            </div>
+            <div style="display:flex; gap:8px;">
+                <a class="btn btn-sm" href="{{ url_for('admin_all_issues') }}">Show All Issues</a>
+                <!-- <a class="btn btn-sm btn-dashboard" href="{{ url_for('admin_dashboard') }}">← Back</a> -->
+            </div>
+        </div>
+    {% else %}
+        {% if issues %}
+            <table class="issues-table">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <!-- <th>Category</th> -->
+                        <th>Reported By</th>
+                        <th>Status</th>
+                        <th>Urgency</th>
+                        <th>Date Reported</th>
+                        <th>Assign to Group</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for issue in issues %}
+                    <tr>
+                        <td><strong>{{ issue.title }}</strong></td>
+                        <!-- <td>{{ (issue.category or '')|replace('_',' ')|title }}</td> -->
+                        <td>{{ issue.author.name if issue.author else 'Unknown' }}</td>
+                        <td>
+                            <form action="{{ url_for('set_status', issue_id=issue._id) }}" method="post" class="status-form">
+                                <select name="status" onchange="this.form.submit()" aria-label="Change status for {{ issue.title }}">
+                                    <option value="">Select</option>
+                                    <option value="In Progress" {% if issue.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                                    <option value="Pending" {% if issue.status == 'Pending' %}selected{% endif %}>Pending</option>
+                                    <option value="Resolved" {% if issue.status == 'Resolved' %}selected{% endif %}>Resolved</option>
+                                </select>
+                            </form>
+                        </td>
+                        <td>
+                            {% set urgency_key = (issue.urgency or 'low')|lower %}
+                            {% set urgency_class = 'urgency-high' if urgency_key == 'high' else ('urgency-medium' if urgency_key == 'medium' else 'urgency-low') %}
+                            <span class="urgency-badge {{ urgency_class }}">
+                                {{ (issue.get('urgency') or 'low')|title }}
+                            </span>
+                        </td>
+                        <td>{{ issue.created_at.strftime('%Y-%m-%d %H:%M') if issue.created_at else 'N/A' }}</td>
+                        <td>
+                            <form action="{{ url_for('admin_all_issues') }}" method="post" class="assign-form">
+                                <input type="hidden" name="issue_id" value="{{ issue._id }}">
+                                <select name="group" required>
+                                    <option value="">Select</option>
+                                    <option value="Road and Infrastructure" {% if issue.get('assigned_group') == 'NGO' %}selected{% endif %}>Road and infrastructure department</option>
+                                    <option value="Sanitation and waste" {% if issue.get('assigned_group') == 'Municipal Corporation' %}selected{% endif %}>Municipality</option>
+                                    <option value="Water supply" {% if issue.get('assigned_group') == 'Government Agency' %}selected{% endif %}>Water supply department</option>
+                                    <option value="NGO" {% if issue.get('assigned_group') == 'NGO' %}selected{% endif %}>NGO</option>
+
+                                    <option value="Electricity" {% if issue.get('assigned_group') == 'Private Contractor' %}selected{% endif %}>Electrical department</option>
+                                    <option value="Other" {% if issue.get('assigned_group') == 'Other' %}selected{% endif %}>Other</option>
+                                </select>
+                                <button type="submit">Assign</button>
+                            </form>
+                        </td>
+                        <td>
+                            <div class="action-links" style="display:flex; gap:6px; align-items:center;">
+                                <a href="{{ url_for('view_issue', issue_id=issue._id) }}">View</a>
+                                <!-- previously had set status & mark read controls; removed per request -->
+                                <form action="{{ url_for('delete_issue', issue_id=issue._id) }}" method="post" style="display:inline;">
+                                    <button type="submit" class="delete" onclick="return confirm('Are you sure? This cannot be undone.');">Delete</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="no-issues">
+                <p><i class="fas fa-inbox"></i></p>
+                <p>No issues have been reported yet.</p>
+            </div>
+        {% endif %}
+    {% endif %}
+{% endblock %}

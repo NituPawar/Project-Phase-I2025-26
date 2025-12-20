@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}My Issues{% endblock %}
+{% block content %}
+    <h1>My Reported Issues</h1>
+    
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    
+    {% if issues %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Status</th>
+                    <th>Date Reported</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for issue in issues %}
+                <tr>
+                    <td>{{ issue.title }}</td>
+                    <td>{{ issue.status }}</td>
+                    <td>{{ issue.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                    <td>
+                        <a href="{{ url_for('view_issue', issue_id=issue._id) }}">View</a>
+                        {% if issue.status == 'Open' %}
+                            {% else %}
+                                <!-- | <a href="/update-status/{{ issue._id }}/Open">Reopen</a> -->
+                            {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>You haven't reported any issues yet.</p>
+    {% endif %}
+{% endblock %}
+{% block footer %}{% endblock %}
