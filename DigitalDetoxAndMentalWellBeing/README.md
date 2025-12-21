@@ -218,10 +218,7 @@ User feedback indicates improved productivity and reduced digital fatigue within
 
 ## Author
 
-**Vedika Lohiya**
-**Aditi Mane**
-**Vedanti Lavekar**
-**Isha Jadhav**
+**Vedika Lohiya, Aditi Mane, Vedanti Lavekar, Isha Jadhav**
 B.Tech CSE(B)
 Project Phase I – 2025–26
 
