@@ -1,7 +1,5 @@
 # Digital Detox and Mental Well-Being System
 
-Flutter Firebase Behavioral Psychology License
-
 A comprehensive digital well-being application designed to reduce screen addiction, improve focus, emotional balance, and self-control using behavioral psychology, gamification, and parental supervision mechanisms.
 
 Academic & Commercial Friendly: Built using Flutter and Firebase (open-source and industry-accepted tools) suitable for academic evaluation and real-world deployment.
