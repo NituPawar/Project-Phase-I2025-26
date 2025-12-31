@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Home - Jan Samasya Portal{% endblock %}
+{% block head %}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+{% endblock %}
+{% block scripts %}
+    <script src="{{ url_for('static', filename='home.js') }}"></script>
+{% endblock %}
+{% block content %}
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Your Voice Matters in Building a Better Community</h1>
+            <p>Report, track, and help resolve public issues in your neighborhood with our citizen engagement platform.</p>
+            <div class="hero-buttons">
+                <a href="/report-issue" class="btn btn-primary"><i class="fas fa-plus-circle"></i> Report an Issue</a>
+                <!-- <a href="/all-issues" class="btn btn-secondary"><i class="fas fa-search"></i> View Reported Issues</a> -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-number">12,548+</div>
+                    <div class="stat-label">Issues Reported</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">9,732+</div>
+                    <div class="stat-label">Issues Resolved</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">78%</div>
+                    <div class="stat-label">Satisfaction Rate</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">24-48h</div>
+                    <div class="stat-label">Average Response Time</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}

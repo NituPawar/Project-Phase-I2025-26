@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Issue Details{% endblock %}
+{% block content %}
+<h1>Issue Details</h1>
+<nav>
+    <a href="/home">Home</a>
+    <a href="/my_issues">My Issues</a>
+    <a href="/all-issues">All Issues</a>
+    <a href="/logout">Logout</a>
+</nav>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<div>
+    <h2>{{ issue.title }}</h2>
+    <p><strong>Status:</strong> {{ issue.status }}</p>
+    <p><strong>Category:</strong> {{ issue.category }}</p>
+    <p><strong>Description:</strong> {{ issue.description }}</p>
+    <p><strong>Location:</strong> {{ issue.location_description }}</p>
+    <p><strong>Latitude:</strong> {{ issue.latitude }}</p>
+    <p><strong>Longitude:</strong> {{ issue.longitude }}</p>
+    <p><strong>Urgency:</strong> {{ issue.urgency }}</p>
+    <p><strong>Reported by:</strong> {{ issue.reporter_name or issue.reporter_email }}</p>
+    <p><strong>Reported on:</strong> {{ issue.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+
+    {% if issue.photo_filenames %}
+        <h3>Photos:</h3>
+        <ul>
+            {% for photo in issue.photo_filenames %}
+                <li><img src="{{ url_for('static', filename='uploads/' ~ photo) }}" alt="Issue Photo" style="max-width: 300px;"></li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</div>
+{% endblock %}
+{% block footer %}{% endblock %}
