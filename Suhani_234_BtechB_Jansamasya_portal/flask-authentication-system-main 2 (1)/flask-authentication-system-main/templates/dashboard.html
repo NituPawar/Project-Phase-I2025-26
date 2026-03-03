@@ -1,0 +1,640 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="dashboard-container">
+    <!-- Welcome Header -->
+    <section class="dashboard-header">
+        <div class="welcome-banner">
+            <h1>Welcome back, {{ user.name }}!</h1>
+            <p class="subtitle">Here's what's happening in your community</p>
+            <div class="last-login">
+                <i class="fas fa-clock"></i> Last active: {{ user.last_login|time_ago }}
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <a href="/issues/new" class="action-card report-issue">
+                <i class="fas fa-plus-circle"></i>
+                <span>Report New Issue</span>
+            </a>
+            <a href="/profile" class="action-card edit-profile">
+                <i class="fas fa-user-edit"></i>
+                <span>Edit Profile</span>
+            </a>
+            <a href="/notifications" class="action-card notifications">
+                <i class="fas fa-bell"></i>
+                <span>Notifications</span>
+                {% if unread_count > 0 %}
+                <span class="badge">{{ unread_count }}</span>
+                {% endif %}
+            </a>
+        </div>
+    </section>
+
+    <!-- Stats Overview -->
+    <section class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-value">{{ stats.reported_issues }}</div>
+            <div class="stat-label">Issues Reported</div>
+            <div class="stat-trend up">↑ 12% this month</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ stats.assigned_tasks }}</div>
+            <div class="stat-label">Tasks Assigned</div>
+            <div class="stat-trend down">↓ 3% this week</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ stats.resolved_issues }}</div>
+            <div class="stat-label">Issues Resolved</div>
+            <div class="stat-trend up">↑ 8% this month</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ stats.community_rank }}</div>
+            <div class="stat-label">Community Rank</div>
+            <div class="stat-trend neutral">→ Steady</div>
+        </div>
+    </section>
+
+    <!-- Activity Feed -->
+    <section class="dashboard-section">
+        <h2 class="section-title">Recent Activity</h2>
+        <div class="activity-feed">
+            {% for activity in recent_activities %}
+            <div class="activity-item">
+                <div class="activity-icon">
+                    <i class="fas fa-{{ activity.icon }}"></i>
+                </div>
+                <div class="activity-content">
+                    <p>{{ activity.description }}</p>
+                    <small class="text-muted">{{ activity.timestamp|time_ago }}</small>
+                </div>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-stream"></i>
+                <p>No recent activity yet</p>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Priority Issues -->
+    <section class="dashboard-section">
+        <div class="section-header">
+            <h2 class="section-title">Priority Items</h2>
+            <div class="priority-filters">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="assigned">Assigned</button>
+                <button class="filter-btn" data-filter="reported">Reported</button>
+            </div>
+        </div>
+        
+        <div class="priority-items">
+            {% for issue in priority_issues %}
+            <div class="priority-card" data-type="{{ issue.type }}">
+                <div class="priority-meta">
+                    <span class="priority-badge {{ issue.priority }}">{{ issue.priority|capitalize }}</span>
+                    <span class="issue-id">#{{ issue.id }}</span>
+                </div>
+                <h3 class="issue-title">{{ issue.title }}</h3>
+                <div class="issue-progress">
+                    <div class="progress-bar" style="width:{{ issue.progress }}%"></div>
+                </div>
+                <div class="issue-footer">
+                    <span class="status {{ issue.status }}">
+                        <i class="fas fa-{{ 'check-circle' if issue.status=='resolved' else 'sync-alt' }}"></i>
+                        {{ issue.status|capitalize }}
+                    </span>
+                </div>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-check-circle"></i>
+                <p>No priority items at this time</p>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Community Pulse -->
+    <!-- <section class="dashboard-section">
+        <h2 class="section-title">Community Pulse</h2>
+        <div class="pulse-grid">
+            <div class="pulse-card">
+                <h3>Hot Issues</h3>
+                <ul class="hot-issues">
+                    {% for issue in trending_issues %}
+                    <li>
+                        <a href="/issues/{{ issue.id }}">{{ issue.title }}</a>
+                        <span class="comment-count">{{ issue.comments }} comments</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="pulse-card">
+                <h3>Recent Resolutions</h3>
+                <ul class="resolved-issues">
+                    {% for issue in resolved_issues %}
+                    <li>
+                        <a href="/issues/{{ issue.id }}">{{ issue.title }}</a>
+                        <span class="resolved-date">{{ issue.resolved_at|time_ago }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </section>
+</div> -->
+
+<!-- Dynamic Dashboard JS -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Priority filtering
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    filterButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            filterButtons.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            const filter = this.dataset.filter;
+            const items = document.querySelectorAll('.priority-card');
+            
+            items.forEach(item => {
+                if (filter === 'all') {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = item.dataset.type === filter ? 'block' : 'none';
+                }
+            });
+        });
+    });
+
+    // Animate stats on scroll
+    const animateStats = () => {
+        const statCards = document.querySelectorAll('.stat-card');
+        statCards.forEach((card, index) => {
+            setTimeout(() => {
+                card.classList.add('animated');
+            }, index * 150);
+        });
+    };
+
+    // Intersection Observer for animations
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                if (entry.target.classList.contains('stats-grid')) {
+                    animateStats();
+                }
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.dashboard-section, .stats-grid').forEach(section => {
+        observer.observe(section);
+    });
+});
+</script>
+
+<style>
+/* Base Dashboard Styles */
+.dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    color: #333;
+}
+
+.dashboard-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2.5rem;
+    gap: 1.5rem;
+}
+
+.welcome-banner h1 {
+    font-size: 2.2rem;
+    margin-bottom: 0.5rem;
+    color: #2c3e50;
+}
+
+.subtitle {
+    color: #7f8c8d;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.last-login {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #95a5a6;
+    font-size: 0.9rem;
+}
+
+/* Quick Actions */
+.quick-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.action-card {
+    flex: 1;
+    min-width: 180px;
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    color: inherit;
+    text-decoration: none;
+}
+
+.action-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.action-card i {
+    font-size: 2rem;
+    margin-bottom: 0.8rem;
+}
+
+.action-card.report-issue i { color: #e74c3c; }
+.action-card.edit-profile i { color: #3498db; }
+.action-card.notifications i { color: #f39c12; }
+
+.badge {
+    background: #e74c3c;
+    color: white;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    margin-left: 0.5rem;
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s ease;
+}
+
+.stat-card.animated {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.stat-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 0.3rem;
+}
+
+.stat-label {
+    color: #7f8c8d;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+}
+
+.stat-trend {
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.stat-trend.up { color: #2ecc71; }
+.stat-trend.down { color: #e74c3c; }
+.stat-trend.neutral { color: #3498db; }
+
+/* Dashboard Sections */
+.dashboard-section {
+    margin-bottom: 3rem;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+}
+
+.dashboard-section.visible {
+    opacity: 1;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 50px;
+    height: 3px;
+    background: linear-gradient(to right, #3498db, #9b59b6);
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Activity Feed */
+.activity-feed {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.activity-item {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid #ecf0f1;
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.activity-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #3498db;
+    flex-shrink: 0;
+}
+
+.activity-content p {
+    margin-bottom: 0.3rem;
+}
+
+.view-all {
+    display: inline-block;
+    margin-top: 1rem;
+    color: #3498db;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.view-all:hover {
+    color: #2980b9;
+    text-decoration: underline;
+}
+
+/* Priority Items */
+.priority-filters {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.filter-btn {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    border: none;
+    background: #ecf0f1;
+    color: #7f8c8d;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.filter-btn.active {
+    background: #3498db;
+    color: white;
+}
+
+.priority-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.priority-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.priority-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.priority-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.priority-badge {
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.priority-badge.high { background: #ffecec; color: #e74c3c; }
+.priority-badge.medium { background: #fff8e6; color: #f39c12; }
+.priority-badge.low { background: #e6f7ff; color: #3498db; }
+
+.issue-id {
+    color: #95a5a6;
+    font-size: 0.85rem;
+}
+
+.issue-title {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    color: #2c3e50;
+}
+
+.issue-progress {
+    height: 6px;
+    background: #ecf0f1;
+    border-radius: 3px;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(to right, #3498db, #9b59b6);
+    border-radius: 3px;
+    transition: width 0.6s ease;
+}
+
+.issue-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.status.pending { color: #f39c12; }
+.status.in-progress { color: #3498db; }
+.status.resolved { color: #2ecc71; }
+
+.view-issue {
+    color: #3498db;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.view-issue:hover {
+    color: #2980b9;
+    text-decoration: underline;
+}
+
+/* Community Pulse */
+.pulse-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.pulse-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.pulse-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    color: #2c3e50;
+}
+
+.hot-issues li, .resolved-issues li {
+    padding: 0.8rem 0;
+    border-bottom: 1px solid #ecf0f1;
+    display: flex;
+    justify-content: space-between;
+}
+
+.hot-issues li:last-child, .resolved-issues li:last-child {
+    border-bottom: none;
+}
+
+.hot-issues a, .resolved-issues a {
+    color: #3498db;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.hot-issues a:hover, .resolved-issues a:hover {
+    color: #2980b9;
+    text-decoration: underline;
+}
+
+.comment-count, .resolved-date {
+    color: #95a5a6;
+    font-size: 0.85rem;
+}
+
+/* Empty States */
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #95a5a6;
+}
+
+.empty-state i {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.empty-state p {
+    font-size: 1.1rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .dashboard-header {
+        flex-direction: column;
+    }
+    
+    .quick-actions {
+        width: 100%;
+    }
+    
+    .action-card {
+        min-width: 100%;
+    }
+    
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .priority-filters {
+        width: 100%;
+        overflow-x: auto;
+        padding-bottom: 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .dashboard-container {
+        padding: 1rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .priority-items {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %}

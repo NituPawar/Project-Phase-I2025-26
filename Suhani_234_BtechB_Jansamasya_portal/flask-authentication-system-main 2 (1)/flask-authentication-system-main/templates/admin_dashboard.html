@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block head %}
+<style>
+    :root {
+        --purple-700: #6a0dad;
+        --purple-600: #7b1fa2;
+        --muted: #6b7280;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<h1>Admin Dashboard</h1>
+
+<a href="{{ url_for('export_issues') }}" class="btn btn-primary" style="margin-bottom: 1rem;">Download Issues CSV</a>
+
+<!-- two-column layout: users sidebar and main content -->
+<div style="display:flex; gap:1.5rem; align-items:flex-start; margin-bottom:1.5rem;">
+    <aside style="width: 320px;">
+        <div style="background: #fff; padding:12px; border-radius:8px; box-shadow: 0 6px 18px rgba(0,0,0,0.04);">
+            <h3 style="margin:0 0 8px 0; color:var(--purple-700);">Users</h3>
+            <div style="margin-bottom:8px;"><a class="btn btn-sm" href="{{ url_for('admin_all_issues') }}">Show All Issues</a></div>
+            <div style="max-height:520px; overflow:auto;">
+                {% for user in users %}
+                <div style="padding:8px; border-bottom:1px solid rgba(0,0,0,0.04); display:flex; justify-content:space-between; gap:8px; align-items:center;">
+                    <div>
+                        <div style="font-weight:700">{{ user.name or user.email }}</div>
+                        <div style="font-size:0.9rem; color:var(--muted)">{{ user.email }}</div>
+                    </div>
+                    <div style="text-align:right;">
+                                <div style="font-weight:800">{{ user.issue_count or 0 }}</div>
+                                <div style="font-size:0.85rem;">
+                                    <a class="btn btn-sm" href="{{ url_for('admin_all_issues') }}?user_id={{ user._id_str }}">View</a>
+                                </div>
+                    </div>
+                </div>
+                {% else %}
+                <div>No users found.</div>
+                {% endfor %}
+            </div>
+        </div>
+    </aside>
+
+    <div style="flex:1;">
+        <div style="display: flex; gap: 2rem; margin-bottom: 2rem;">
+            <div style="flex: 1;">
+                <canvas id="urgencyChart"></canvas>
+            </div>
+            <div style="flex: 1;">
+                <canvas id="statusChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- <thead>
+        <tr>
+            <th>Issue ID</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Photos</th>
+            <th>Urgency</th>
+            <th>Status</th>
+            <th>Read</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+<div style="background:#fff; padding:16px; border-radius:8px; box-shadow: 0 6px 18px rgba(0,0,0,0.04);">
+    <p style="margin:0 0 8px 0; font-weight:700;">Issues</p>
+    <p style="margin:0 0 8px 0; color:var(--muted);">To manage issues, please click <a href="{{ url_for('admin_all_issues') }}">All Issues</a> or click "View" next to a user to see that user's reported issues.</p>
+</div> -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Chart data as JSON to avoid injecting Jinja inside JS code -->
+<script type="application/json" id="urgency-data">{{ [urgency_counts.low, urgency_counts.medium, urgency_counts.high] | tojson }}</script>
+<script type="application/json" id="status-data">{{ [status_counts.Open, status_counts.Resolved] | tojson }}</script>
+<script>
+    /* jshint ignore:start */
+    const urgencyCtx = document.getElementById('urgencyChart').getContext('2d');
+    const statusCtx = document.getElementById('statusChart').getContext('2d');
+
+    const urgencyValues = JSON.parse(document.getElementById('urgency-data').textContent || '[]');
+    const urgencyData = {
+        labels: ['Low', 'Medium', 'High'],
+        datasets: [{
+            label: 'Urgency Distribution',
+            data: urgencyValues,
+            backgroundColor: [
+                'rgba(54, 162, 235, 0.7)',
+                'rgba(255, 206, 86, 0.7)',
+                'rgba(255, 99, 132, 0.7)'
+            ],
+            borderColor: [
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(255, 99, 132, 1)'
+            ],
+            borderWidth: 1
+        }]
+    };
+
+    const statusValues = JSON.parse(document.getElementById('status-data').textContent || '[]');
+    const statusData = {
+        labels: ['Open', 'Resolved'],
+        datasets: [{
+            label: 'Issue Status',
+            data: statusValues,
+            backgroundColor: [
+                'rgba(255, 159, 64, 0.7)',
+                'rgba(75, 192, 192, 0.7)'
+            ],
+            borderColor: [
+                'rgba(255, 159, 64, 1)',
+                'rgba(75, 192, 192, 1)'
+            ],
+            borderWidth: 1
+        }]
+    };
+
+    const urgencyChart = new Chart(urgencyCtx, {
+        type: 'pie',
+        data: urgencyData,
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                },
+                title: {
+                    display: true,
+                    text: 'Urgency Distribution'
+                }
+            }
+        },
+    });
+
+    const statusChart = new Chart(statusCtx, {
+        type: 'doughnut',
+        data: statusData,
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                },
+                title: {
+                    display: true,
+                    text: 'Issue Status'
+                }
+            }
+        },
+    });
+    /* jshint ignore:end */
+</script>
+
+<script>
+    // filterIssues removed: replaced in-place filtering with navigation to admin_all_issues page.
+</script>
+
+{% endblock %}

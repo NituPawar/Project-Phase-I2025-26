@@ -1,0 +1,12 @@
+python3 create_admin_user.py "Admin Name" admin@example.com yourpassword
+
+Replace "Admin Name", admin@example.com, and yourpassword with the desired admin user's name, email, and password.
+
+======admin login=====
+"Admin Name"
+admin@example.com
+yourpassword
+
+======admin login=====
+ python3 create_admin_user.py "saurabh" saurabhmeshram74.0@gmail.com saurabh
+Admin user saurabh created successfully.

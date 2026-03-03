@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Notifications{% endblock %}
+{% block content %}
+  <div style="max-width:900px; margin:32px auto; background:white; padding:20px; border-radius:10px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+      <h1 style="margin:0">Notifications</h1>
+      <form action="{{ url_for('mark_all_read') }}" method="post">
+        <button class="btn" type="submit">Mark all read</button>
+      </form>
+    </div>
+    {% if notifications and notifications|length > 0 %}
+      <ul style="list-style:none; padding:0; margin:0;">
+        {% for n in notifications %}
+          <li style="padding:12px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; gap:12px; align-items:center; background:{{ 'linear-gradient(90deg,#fffbea,#fff)' if not n.read else 'transparent' }};">
+            <div>
+              <div style="font-weight:800;">{{ n.message }}</div>
+              {% if n.issue_id %}
+                <div style="margin-top:6px;"><a href="/issue/{{ n.issue_id }}">View issue</a></div>
+              {% endif %}
+              <div style="color:var(--muted); margin-top:6px; font-size:0.9rem;">{{ n.timestamp|time_ago }}</div>
+            </div>
+            <div style="min-width:120px; text-align:right;">
+              {% if not n.read %}
+                <span class="badge" style="background:#f39c12;">New</span>
+              {% else %}
+                <span class="badge">Read</span>
+              {% endif %}
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <div style="padding:40px; text-align:center; color:var(--muted);">You have no notifications.</div>
+    {% endif %}
+  </div>
+{% endblock %}
