@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ayurveda Seeds | Shop Now</title>
+ <style>
+/* General Reset and Font */
+* {
+  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+  margin: 0;
+  background-color: #f4f8f3; /* soft nature background */
+  color: #333;
+}
+
+/* Header */
+header {
+  background-color: #0c3b2e;
+  color: white;
+  text-align: center;
+  padding: 1.5rem 0;
+  font-size: 1.6rem;
+  letter-spacing: 1px;
+}
+
+/* Container for Seed Cards */
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  padding: 2rem;
+  max-width: 100%;
+  margin: 0;
+}
+
+/* Seed Card */
+.seed-card {
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  overflow: hidden;
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.seed-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+}
+
+.seed-card img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+}
+
+.seed-name {
+  padding: 1rem 0 0.5rem 0;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #0c3b2e;
+}
+
+/* Buy Button */
+.buy-link {
+  display: inline-block;
+  margin-bottom: 1rem;
+  text-decoration: none;
+  background-color: #0c3b2e;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.buy-link:hover {
+  background-color: #158467;
+}
+
+/* Footer */
+footer {
+  background-color: #0c3b2e;
+  color: white;
+  text-align: center;
+  padding: 1rem;
+  margin-top: 2rem;
+  font-size: 0.9rem;
+}
+
+/* Navbar/Home Button */
+.navbar {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  z-index: 100;
+}
+
+.navbar button {
+  display: inline-block;
+  background: linear-gradient(135deg, #a8d5ba, #4b7740); /* soft herbal gradient */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
+}
+
+.navbar button:hover {
+  background: linear-gradient(135deg, #4b7740, #3a5a40);
+  transform: scale(1.05);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.3);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  header {
+    font-size: 1.3rem;
+  }
+  .navbar button {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+  }
+}
+</style>
+
+</head>
+<body>
+  <header>
+    🌱 Ayurvedic Seeds Collection
+  </header>
+
+  <div class="navbar">
+    <nav>
+  <button onclick="location.href='{{ url_for('sub_home') }}'">Home</button>
+</nav>
+
+  </div>
+
+
+  <div class="container">
+    <div class="seed-card">
+      <img src="https://m.media-amazon.com/images/I/61zQx1N2XjL._SX569_.jpg" alt="Tulsi Seeds" />
+      <div class="seed-name">Tulsi Seeds</div>
+      <a class="buy-link" href="https://www.flipkart.com/search?q=tulsi+seeds" target="_blank">Buy on Flipkart</a>
+    </div>
+
+    <div class="seed-card">
+      <img src="https://almightyorganic.com/cdn/shop/files/FenugreekSeeds.jpg?v=1721889940" alt="Methi Seeds" />
+      <div class="seed-name">Methi Seeds</div>
+      <a class="buy-link" href="https://www.flipkart.com/search?q=methi+seeds" target="_blank">Buy on Flipkart</a>
+    </div>
+
+    <div class="seed-card">
+      <img src="https://indianjadibooti.com/Jadistore/image/catalog/IJB-Final-Photos-500-500/indianjadibooti-neem-seed-niboli-423-100gm-500-500.jpg" alt="Neem Seeds" />
+      <div class="seed-name">Neem Seeds</div>
+      <a class="buy-link" href="https://www.flipkart.com/search?q=neem+seeds" target="_blank">Buy on Flipkart</a>
+    </div>
+
+    <div class="seed-card">
+      <img src="https://m.media-amazon.com/images/I/71LFmPUP9xL._SL1500_.jpg" alt="Amla Seeds" />
+      <div class="seed-name">Amla Seeds</div>
+      <a class="buy-link" href="https://www.flipkart.com/search?q=amla+seeds" target="_blank">Buy on Flipkart</a>
+    </div>
+
+    <div class="seed-card">
+      <img src="https://5.imimg.com/data5/SELLER/Default/2024/4/411936740/PW/ZM/AG/218675552/ashwagandha-seed-500x500.jpg" alt="Ashwagandha Seeds" />
+      <div class="seed-name">Ashwagandha Seeds</div>
+      <a class="buy-link" href="https://www.flipkart.com/search?q=ashwagandha+seeds" target="_blank">Buy on Flipkart</a>
+    </div>
+
+    <!-- Replaced Turmeric with Brahmi -->
+    <div class="seed-card">
+      <img src="https://5.imimg.com/data5/IU/BP/MY-23856090/organic-brahmi-powder-500x500.jpg" alt="Brahmi Seeds" />
+      <div class="seed-name">Brahmi Seeds</div>
+      <a class="buy-link" href="https://www.flipkart.com/search?q=brahmi+seeds" target="_blank">Buy on Flipkart</a>
+    </div>
+
+    <div class="seed-card">
+      <img src="https://tse1.mm.bing.net/th/id/OIP.2HdoEcIg5BN3aeAMgQnQ3wHaHa?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3" alt="Curry Leaf Seeds" />
+      <div class="seed-name">Curry Leaf Seeds</div>
+      <a class="buy-link" href="https://www.flipkart.com/search?q=kadi+patta+seeds" target="_blank">Buy on Flipkart</a>
+    </div>
+
+    <div class="seed-card">
+      <img src="https://tse2.mm.bing.net/th/id/OIP.NNLxYW-DEYnMFqigen98ygAAAA?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3" alt="Lemon Seeds" />
+      <div class="seed-name">Lemon Seeds</div>
+      <a class="buy-link" href="https://www.flipkart.com/search?q=lemon+seeds" target="_blank">Buy on Flipkart</a>
+    </div>
+
+   
+
+    <div class="seed-card">
+      <img src="https://tse4.mm.bing.net/th/id/OIP.aR9IscCEycAIhmCvODVJ2QHaHa?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3s" alt="Shatavari Seeds" />
+      <div class="seed-name">Shatavari Seeds</div>
+      <a class="buy-link" href="https://www.flipkart.com/search?q=shatavari+seeds" target="_blank">Buy on Flipkart</a>
+    </div>
+
+    <div class="seed-card">
+      <img src="https://meds.myupchar.com/90511/Guduchi.jpg" alt="Guduchi Seeds" />
+      <div class="seed-name">Guduchi Seeds</div>
+      <a class="buy-link" href="https://www.flipkart.com/search?q=guduchi+seeds" target="_blank">Buy on Flipkart</a>
+    </div>
+
+    <div class="seed-card">
+      <img src="https://th.bing.com/th/id/R.0d7056c2866f30b1a141b324e268ed19?rik=%2bk2M3RVGOQFENw&riu=http%3a%2f%2frukmini1.flixcart.com%2fimage%2f300%2f300%2fkpu3frk0%2fplant-seed%2fw%2f1%2fz%2f120-am013-siddharth-fish-farm-original-imag3zhfcvgpwapd.jpeg&ehk=C%2bhunFSh0kzL8XTthclGGCeicnB2WQSeLB07aFIjuIo%3d&risl=&pid=ImgRaw&r=0" alt="Giloy Seeds" />
+      <div class="seed-name">Giloy Seeds</div>
+      <a class="buy-link" href="https://www.flipkart.com/search?q=giloy+seeds" target="_blank">Buy on Flipkart</a>
+    </div>
+
+    <div class="seed-card">
+      <img src="https://m.media-amazon.com/images/I/81Wb9Tglg8L._SL1500_.jpg" alt="Kalonji Seeds" />
+      <div class="seed-name">Kalonji Seeds</div>
+      <a class="buy-link" href="https://www.flipkart.com/search?q=kalonji+seeds" target="_blank">Buy on Flipkart</a>
+    </div>
+
+    <div class="seed-card">
+      <img src="https://mfpe.com/wp-content/uploads/2024/03/Mustered-Seeds.png" alt="Mustard Seeds" />
+      <div class="seed-name">Mustard Seeds</div>
+      <a class="buy-link" href="https://www.flipkart.com/search?q=mustard+seeds" target="_blank">Buy on Flipkart</a>
+    </div>
+
+    <div class="seed-card">
+      <img src="https://5.imimg.com/data5/MK/ZT/SP/SELLER-43652127/corinder-seed-1-progressive-500x500.jpg" alt="Coriander Seeds" />
+      <div class="seed-name">Coriander Seeds</div>
+      <a class="buy-link" href="https://www.flipkart.com/search?q=coriander+seeds" target="_blank">Buy on Flipkart</a>
+    </div>
+  </div>
+</body>
+</html>

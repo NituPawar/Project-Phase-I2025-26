@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tulsi (Holy Basil) - Medicinal Plant</title>
+<style>
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #f0fdf4;
+    color: #2f3e2f;
+    margin: 0;
+    padding: 20px;
+    line-height: 1.6;
+  }
+  .container {
+    max-width: 800px;
+    margin: auto;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    position: relative;
+  }
+  img {
+    max-width: 400px;
+    width: 100%;
+    border-radius: 12px;
+    margin: 0 auto 20px;
+    display: block;
+  }
+  h1 { color: #15803d; text-align: center; }
+  h2 { margin-top: 20px; color: #166534; }
+  a.back-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    text-decoration: none;
+    color: #fff;
+    background: #15803d;
+    padding: 10px 15px;
+    border-radius: 8px;
+  }
+  a.back-btn:hover { background: #0d4d24; }
+</style>
+</head>
+<body>
+  <div class="container">
+    <a href="{{ url_for('index1') }}" class="back-btn">⬅ Back to Garden</a>
+    <h1>Tulsi (Ocimum sanctum)</h1>
+    <img src="https://dy3rma73kowlp.cloudfront.net/uploads/2024/03/tulsi.jpg" alt="Tulsi Plant" />
+    <p><strong>Tulsi</strong>, also known as Holy Basil, is considered sacred in India and widely used in Ayurveda for its spiritual and medicinal properties.</p>
+    
+    <h2>Uses</h2>
+    <ul>
+      <li>Used in herbal teas and Ayurvedic remedies.</li>
+      <li>Applied in oils for stress relief and immunity.</li>
+      <li>Worshipped in households for its sacred value.</li>
+    </ul>
+
+    <h2>Health Benefits</h2>
+    <ul>
+      <li>Boosts immunity and protects against infections.</li>
+      <li>Reduces stress and anxiety.</li>
+      <li>Improves respiratory health.</li>
+      <li>Acts as a natural detoxifier.</li>
+    </ul>
+  </div>
+</body>
+</html>

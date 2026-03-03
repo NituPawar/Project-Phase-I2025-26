@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ashwagandha - Medicinal Plant</title>
+<style>
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #fff7ed;
+    color: #2f3e2f;
+    margin: 0;
+    padding: 20px;
+    line-height: 1.6;
+  }
+  .container {
+    max-width: 800px;
+    margin: auto;
+    background: #fff4eb;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    position: relative;
+  }
+  img {
+    max-width: 400px;
+    width: 100%;
+    border-radius: 12px;
+    margin: 0 auto 20px;
+    display: block;
+  }
+  h1 { color: #b45309; text-align: center; }
+  h2 { margin-top: 20px; color: #92400e; }
+  a.back-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    text-decoration: none;
+    color: #fff;
+    background: #b45309;
+    padding: 10px 15px;
+    border-radius: 8px;
+  }
+  a.back-btn:hover { background: #78350f; }
+</style>
+</head>
+<body>
+  <div class="container">
+    <a href="{{ url_for('index1') }}" class="back-btn">⬅ Back to Garden</a>
+    <h1>Ashwagandha (Withania somnifera)</h1>
+    <img src="https://thumbs.dreamstime.com/b/ashwagandha-plant-plant-name-ashwagandha-rajasthan-235603477.jpg" alt="Ashwagandha Plant">
+    <p><strong>Ashwagandha</strong> is a popular herb in Ayurvedic medicine, known for its adaptogenic properties that help the body manage stress and improve vitality.</p>
+    
+    <h2>Uses</h2>
+    <ul>
+      <li>Used in powders, capsules, and herbal teas.</li>
+      <li>Applied in traditional remedies for energy and vitality.</li>
+      <li>Used as a natural supplement for stress management.</li>
+    </ul>
+
+    <h2>Health Benefits</h2>
+    <ul>
+      <li>Reduces stress and anxiety.</li>
+      <li>Enhances stamina and physical performance.</li>
+      <li>Boosts immunity and brain function.</li>
+      <li>Supports hormonal balance and overall wellness.</li>
+    </ul>
+  </div>
+</body>
+</html>

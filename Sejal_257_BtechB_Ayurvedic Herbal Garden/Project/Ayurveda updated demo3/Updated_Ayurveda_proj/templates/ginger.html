@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ginger - Medicinal Plant</title>
+<style>
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #fff7ed;
+    color: #2f3e2f;
+    margin: 0;
+    padding: 20px;
+    line-height: 1.6;
+  }
+  .container {
+    max-width: 800px;
+    margin: auto;
+    background: #fff4eb;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    position: relative;
+  }
+  img {
+    max-width: 400px;
+    width: 100%;
+    border-radius: 12px;
+    margin: 0 auto 20px;
+    display: block;
+  }
+  h1 { color: #b45309; text-align: center; }
+  h2 { margin-top: 20px; color: #92400e; }
+
+  a.back-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    text-decoration: none;
+    color: #fff;
+    background: #b45309;
+    padding: 10px 15px;
+    border-radius: 8px;
+  }
+  a.back-btn:hover { background: #78350f; }
+</style>
+</head>
+<body>
+  <div class="container">
+    <a href="{{ url_for('sub_home') }}" class="back-btn">⬅ Back to Garden</a>
+    <h1>Ginger (Zingiber officinale)</h1>
+    <img src="https://wallpapers.com/images/featured/ginger-pictures-5gog7qtsj35k75n8.jpg" alt="Ginger Plant">
+    <p><strong>Ginger</strong> is a rhizome widely used as a spice, flavoring agent, and traditional medicine for digestive and anti-inflammatory properties.</p>
+    
+    <h2>Uses</h2>
+    <ul>
+      <li>Used in cooking, teas, and beverages.</li>
+      <li>Applied in herbal remedies for nausea and colds.</li>
+      <li>Used in essential oils and cosmetics.</li>
+    </ul>
+
+    <h2>Health Benefits</h2>
+    <ul>
+      <li>Aids digestion and reduces nausea.</li>
+      <li>Reduces inflammation and joint pain.</li>
+      <li>Boosts immunity and respiratory health.</li>
+      <li>Supports cardiovascular health and circulation.</li>
+    </ul>
+  </div>
+</body>
+</html>

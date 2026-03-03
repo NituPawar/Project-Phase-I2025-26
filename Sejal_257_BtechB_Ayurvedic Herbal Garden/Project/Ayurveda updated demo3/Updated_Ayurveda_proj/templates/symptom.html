@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Symptom Remedy Predictor</title>
+
+  <!-- jsPDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      /* 🌿 FAINT HERBAL BACKGROUND */
+      background: linear-gradient(
+        135deg,
+        #eef6ec 0%,
+        #e6f0e4 50%,
+        #f5f9f3 100%
+      );
+    }
+
+    .navbar {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      right: 15px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .btn {
+      padding: 12px 20px;
+      border-radius: 15px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      color: white;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+
+    .home { background: linear-gradient(135deg, #f2b66d, #d9903d); }
+    .download { background: linear-gradient(135deg, #6fa87a, #4b7740); }
+
+    .container {
+      width: 100%;
+      max-width: 520px;
+      /* 🍃 VERY LIGHT WARM SHADE */
+      background: #fffef8;
+      padding: 40px;
+      border-radius: 25px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+      border: 1px solid rgba(140,170,140,0.25);
+    }
+
+    textarea {
+      width: 100%;
+      height: 130px;
+      padding: 15px;
+      border-radius: 15px;
+      border: 1.5px solid #8abf7e;
+      margin-bottom: 20px;
+      background: #fbfdf9;
+      font-family: inherit;
+    }
+
+    #predictBtn {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #6fa87a, #4b7740);
+      color: white;
+      border-radius: 15px;
+      border: none;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+
+    #predictBtn:hover {
+      opacity: 0.95;
+    }
+
+    #result {
+      background: #f4f8f2;
+      padding: 15px;
+      border-radius: 15px;
+      text-align: left;
+      box-shadow: inset 0 2px 5px rgba(0,0,0,0.08);
+    }
+  </style>
+</head>
+<body>
+
+<div class="navbar">
+  <a href="{{ url_for('home') }}" class="btn home">🏠 Home</a>
+  <button id="downloadBtn" class="btn download" disabled>⬇️ Download PDF</button>
+</div>
+
+<div class="container">
+  <h2>Enter Symptoms</h2>
+  <textarea id="symptoms" placeholder="e.g. fever, headache, nausea"></textarea>
+  <button id="predictBtn">Get Remedy</button>
+  <div id="result"></div>
+</div>
+
+<script>
+  const { jsPDF } = window.jspdf;
+  const predictBtn = document.getElementById('predictBtn');
+  const downloadBtn = document.getElementById('downloadBtn');
+  const resultDiv = document.getElementById('result');
+
+  let latestResults = [];
+  const username = "{{ session.get('username', 'User') }}";
+
+  const cleanText = (text) =>
+    text.replace(/[^\x20-\x7E]/g, '').replace(/\s+/g, ' ').trim();
+
+  predictBtn.addEventListener('click', () => {
+    const symptoms = document.getElementById('symptoms').value.trim();
+    resultDiv.innerHTML = '';
+    downloadBtn.disabled = true;
+
+    if (!symptoms) {
+      resultDiv.textContent = "Please enter symptoms.";
+      return;
+    }
+
+    fetch('/predict', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ symptoms })
+    })
+    .then(res => res.json())
+    .then(data => {
+      latestResults = [];
+      data.results.forEach(item => {
+        if (!item.error) {
+          const text = cleanText(item.remedy);
+          latestResults.push(text);
+
+          const p = document.createElement('p');
+          p.textContent = text;
+          p.style.color = "#2f5d3a";
+          resultDiv.appendChild(p);
+        }
+      });
+
+      if (latestResults.length > 0) downloadBtn.disabled = false;
+    });
+  });
+
+  downloadBtn.addEventListener('click', () => {
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+
+    doc.setFont("times", "bold");
+    doc.setFontSize(22);
+    doc.text("AYURVEDIC HERBAL GARDEN", pageWidth / 2, 25, { align: "center" });
+
+    doc.setFontSize(14);
+    doc.text("Wellness the Natural Way", pageWidth / 2, 35, { align: "center" });
+
+    doc.line(20, 42, pageWidth - 20, 42);
+
+    doc.setFontSize(16);
+    doc.text(`Suggested Remedies for ${username}`, 20, 65);
+
+    let yPos = 80;
+    doc.setFont("times", "normal");
+    doc.setFontSize(12);
+
+    latestResults.forEach(remedy => {
+      const split = doc.splitTextToSize(remedy, pageWidth - 40);
+      doc.text(split, 20, yPos);
+      yPos += split.length * 7;
+
+      if (yPos > 270) {
+        doc.addPage();
+        yPos = 20;
+      }
+    });
+
+    doc.save("ayurveda_remedies.pdf");
+  });
+</script>
+
+</body>
+</html>

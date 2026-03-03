@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Medicinal Plants - Virtual Herbal Garden</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: url('https://t3.ftcdn.net/jpg/06/48/87/12/360_F_648871289_JpSAlJRms22c1vIalS6O908VtKQNqOFt.jpg') no-repeat center center fixed;
+    background-size: cover;
+    margin: 0;
+    padding: 20px;
+    color: #2f5d34;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    flex-direction: row;
+  }
+
+  h1 {
+    flex-basis: 100%;
+    text-align: center;
+    margin-bottom: 30px;
+    color: #3a6b35;
+  }
+
+  /* Home button styles */
+  .home-btn {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    padding: 8px 16px;
+    background-color: #3a6b35;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    transition: background-color 0.2s ease;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .home-btn:hover {
+    background-color: #2f5d34;
+  }
+
+  .plant-card {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    width: 320px;
+    cursor: pointer;
+    text-align: center;
+    transition: transform 0.2s ease;
+    padding: 15px;
+  }
+
+  .plant-card:hover,
+  .plant-card:focus {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.25);
+  }
+
+  .plant-card img {
+    width: 100%;
+    border-radius: 12px;
+    height: 250px;
+    object-fit: cover;
+    display: block;
+    margin-bottom: 12px;
+  }
+
+  .plant-name {
+    font-weight: 600;
+    color: #2f5d34;
+    margin-bottom: 6px;
+    font-size: 1.2em;
+  }
+
+  @media (max-width: 600px) {
+    body {
+      justify-content: center;
+    }
+    .plant-card {
+      width: 90%;
+    }
+    .plant-card img {
+      height: 200px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<h1>Medicinal Plants</h1>
+<!-- Fixed Home Button -->
+<a class="home-btn" href="{{ url_for('sub_home') }}">Home</a>
+
+<script>
+  // Plants data
+  const plants = [
+    { id: 'aloe-vera', name: "Aloe Vera", image: "https://img.staticmb.com/mbcontent/images/uploads/2023/12/How-to-grow-aloe-vera-plant-at-home.jpg" },
+    { id: 'tulsi', name: "Tulsi (Holy Basil)", image: "https://dy3rma73kowlp.cloudfront.net/uploads/2024/03/tulsi.jpg" },
+    { id: 'neem', name: "Neem", image: "https://www.greendna.in/cdn/shop/products/neem-leaves-500x500_500x.jpg?v=1561651964" },
+    { id: 'ashwagandha', name: "Ashwagandha", image: "https://thumbs.dreamstime.com/b/ashwagandha-plant-plant-name-ashwagandha-rajasthan-235603477.jpg" },
+    { id: 'mint', name: "Mint", image: "https://gardenerspath.com/wp-content/uploads/2024/03/Best-Mint-Varieties-Feature.jpg" },
+    { id: 'ginger', name: "Ginger", image: "https://wallpapers.com/images/featured/ginger-pictures-5gog7qtsj35k75n8.jpg" },
+    { id: 'turmeric', name: "Turmeric", image: "https://dqt8gd4elnkw6.cloudfront.net/image/Benefits-of-turmeric-for-your-skin-2.jpg" },
+    { id: 'lemon', name: "Lemon", image: "https://cdn.britannica.com/84/188484-050-F27B0049/lemons-tree.jpg" },
+    { id: 'curry-leaves', name: "Curry Leaves", image: "https://images.herzindagi.info/image/2021/Jan/best-uses-of-curry-leaf.jpg" },
+    { id: 'pepper', name: "Black Pepper", image: "https://permacultureplants.com/wp-content/uploads/black-pepper-spice-plant-1024x544.jpg" },
+    { id: 'hibiscus', name: "Hibiscus", image: "https://foliagefriend.com/wp-content/uploads/2023/04/Hibiscus-flowers-9.jpeg" },
+    { id: 'garlic', name: "Garlic", image: "https://gardenerspath.com/wp-content/uploads/2019/12/Bunch-of-Purple-Garlic-Harvested-and-Cleaned.jpg" },
+    { id: 'fenugreek', name: "Fenugreek (Methi)", image: "https://www.currylovers.co.za/wp-content/uploads/2023/08/fenugreek-methi-information.jpeg" },
+    { id: 'cinnamon', name: "Cinnamon", image: "https://gardeningtips.in/wp-content/uploads/2020/10/Pic2.jpg" },
+    { id: 'brahmi', name: "Brahmi (Bacopa monnieri)", image: "https://cdn.mos.cms.futurecdn.net/5GAEWSEd4iJZrEqS9SmM4.jpg" },
+    { id: 'clove', name: "Clove", image: "https://gardeningtips.in/wp-content/uploads/2020/04/Comp3-17.jpg" },
+    { id: 'sandalwood', name: "Sandalwood", image: "https://wallpapercave.com/wp/wp4668282.jpg" },
+    { id: 'tulip-ginger', name: "Tulip Ginger", image: "http://worldoffloweringplants.com/wp-content/uploads/2017/05/Costus-curvibracteatus-Orange-Tulip-Ginger2.jpg" },
+    { id: 'amla', name: "Amla (Indian Gooseberry)", image: "https://kj1bcdn.b-cdn.net/media/85204/4d6c947dd0a51f2ce7cabcd2159ca225.jpg" },
+    { id: 'bael', name: "Bael (Wood Apple)", image: "https://cdn.britannica.com/97/122497-050-4901E6AB/Bel-fruit.jpg" },
+    { id: 'shatavari', name: "Shatavari", image: "https://5.imimg.com/data5/SELLER/Default/2024/9/448246746/CV/ZH/DG/105683023/sappan-sappan-medicinal-plant-500x500.jpg" }
+  ];
+
+  const body = document.body;
+
+  plants.forEach(plant => {
+    const card = document.createElement('div');
+    card.className = 'plant-card';
+    card.tabIndex = 0;
+    card.setAttribute('role', 'link');
+    card.setAttribute('aria-label', `View details about ${plant.name}`);
+
+    card.addEventListener('click', () => {
+      // Redirect to Flask route instead of .html
+      window.location.href = `/${plant.id}`;
+    });
+
+    card.innerHTML = `
+      <img src="${plant.image}" alt="${plant.name}" />
+      <div class="plant-name">${plant.name}</div>
+    `;
+
+    body.appendChild(card);
+  });
+</script>
+
+</body>
+</html>

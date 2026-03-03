@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Amla - Medicinal Plant</title>
+<style>
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #fff7ed;
+    color: #2f3e2f;
+    margin: 0;
+    padding: 20px;
+    line-height: 1.6;
+  }
+  .container {
+    max-width: 800px;
+    margin: auto;
+    background: #fff4eb;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    position: relative;
+  }
+  img {
+    max-width: 400px;
+    width: 100%;
+    border-radius: 12px;
+    margin: 0 auto 20px;
+    display: block;
+    cursor: default;
+  }
+  h1 { color: #b45309; text-align: center; }
+  h2 { margin-top: 20px; color: #92400e; }
+  a.back-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    text-decoration: none;
+    color: #fff;
+    background: #b45309;
+    padding: 10px 15px;
+    border-radius: 8px;
+  }
+  a.back-btn:hover { background: #78350f; }
+</style>
+</head>
+<body>
+  <div class="container">
+    <a href="{{ url_for('index1') }}" class="back-btn">⬅ Back to Garden</a>
+    <h1>Amla (Indian Gooseberry)</h1>
+    <img src="https://kj1bcdn.b-cdn.net/media/85204/4d6c947dd0a51f2ce7cabcd2159ca225.jpg" alt="Amla Plant">
+    <p><strong>Amla</strong>, also known as Indian Gooseberry, is a rich source of vitamin C and powerful antioxidants. It is widely used in Ayurvedic medicine for rejuvenation and overall wellness.</p>
+
+    <h2>Uses</h2>
+    <ul>
+      <li>Consumed raw, in juices, or as dried powder.</li>
+      <li>Used in Ayurvedic formulations like Chyawanprash and Triphala.</li>
+      <li>Applied in hair oils and skincare products.</li>
+    </ul>
+
+    <h2>Health Benefits</h2>
+    <ul>
+      <li>Boosts immunity and fights infections.</li>
+      <li>Promotes healthy skin and delays aging.</li>
+      <li>Enhances digestion and metabolism.</li>
+      <li>Strengthens hair and improves vision.</li>
+    </ul>
+  </div>
+</body>
+</html>

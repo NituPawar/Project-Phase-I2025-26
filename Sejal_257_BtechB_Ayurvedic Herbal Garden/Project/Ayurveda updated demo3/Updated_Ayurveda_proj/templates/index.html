@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Medicinal Plants - Virtual Herbal Garden</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: url('https://t3.ftcdn.net/jpg/06/48/87/12/360_F_648871289_JpSAlJRms22c1vIalS6O908VtKQNqOFt.jpg') no-repeat center center fixed;
+    background-size: cover;
+    margin: 0;
+    padding: 20px;
+    color: #2f5d34;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    flex-direction: row;
+  }
+
+  /* Navbar with Home button on top-right */
+  nav {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 1000;
+  }
+
+  nav button {
+    background-color: #3a6b35;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    font-size: 1rem;
+  }
+
+  nav button:hover {
+    background-color: #2f5d34;
+  }
+
+  h1 {
+    flex-basis: 100%;
+    text-align: center;
+    margin-bottom: 30px;
+    color: #3a6b35;
+  }
+
+  .plant-card {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    width: 320px;
+    cursor: pointer;
+    text-align: center;
+    transition: transform 0.2s ease;
+    padding: 15px;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .plant-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.25);
+  }
+
+  .plant-card img {
+    width: 100%;
+    border-radius: 12px;
+    height: 250px;
+    object-fit: cover;
+    display: block;
+    margin-bottom: 12px;
+  }
+
+  .plant-name {
+    font-weight: 600;
+    color: #2f5d34;
+    font-size: 1.2em;
+  }
+</style>
+</head>
+<body>
+
+<!-- Navbar with Home button -->
+<nav>
+  <button onclick="window.location.href='{{ url_for('sub_home') }}'">Home</button>
+
+</nav>
+
+<h1>Remedies Based on Diseases</h1>
+
+
+<a href="{{ url_for('digestion') }}" class="plant-card">
+    <img src="https://stgaccinwbsdevlrs01.blob.core.windows.net/newcorporatewbsite/blogs/october2023/detail-main-The-Top-10-Symptoms-of-Digestive-Issues-and-What-They-Mean.jpg" alt="Digestive Issues" />
+  <div class="plant-name">Digestive Issues</div>
+</a>
+
+<a href="{{ url_for('mental') }}"  class="plant-card">
+  <img src="https://www.mindindia.org/public/uploads/blog/613f08cf0aaa0_tmpphphkkqhm.jpg" alt="Mental Health & Cognitive Support" />
+  <div class="plant-name">Mental Health & Cognitive Support</div>
+</a>
+
+<a href="{{ url_for('heart') }}" class="plant-card">
+  <img src="https://birlaayurveda.co.in/wp-content/uploads/2022/06/Ayurveda-For-Healthy-Heart.jpg" alt="Cardiovascular Health" />
+  <div class="plant-name">Cardiovascular Health</div>
+</a>
+
+<a href="{{ url_for('joint_pain') }}"  class="plant-card">
+  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpNEv5WZY1urKlMTLBAmBYgqmUe8DkjRyKkQ&s" alt="Inflammation & Joint Pain" />
+  <div class="plant-name">Inflammation & Joint Pain</div>
+</a>
+
+<a href="{{ url_for('skin') }}"  class="plant-card">
+  <img src="https://premier-clinic.com/wp-content/uploads/2023/06/dry-skin-care-tips-feature-image-1024x683-1.jpg" alt="Skin & Dermatological Health" />
+  <div class="plant-name">Skin & Dermatological Health</div>
+</a>
+
+<a href="{{ url_for('oxygen') }}"  class="plant-card">
+  <img src="https://ebv2e3r5onu.exactdn.com/wp-content/uploads/2020/01/Lung-Diseases.jpg?strip=all&lossy=1&ssl=1" alt="Respiratory Issues" />
+  <div class="plant-name">Respiratory Issues</div>
+</a>
+
+<a href="{{ url_for('eye') }}" class="plant-card">
+  <img src="https://domf5oio6qrcr.cloudfront.net/medialibrary/7201/5c435afb-3de0-4ce6-b7e8-5e5fa8a840ca.jpg" alt="Eye Health & Vision Support" />
+  <div class="plant-name">Eye Health & Vision Support</div>
+</a>
+
+<a href="{{ url_for('weight') }}"  class="plant-card">
+  <img src="https://www.helpguide.org/wp-content/uploads/2023/02/Weight-Loss-1-384x256.jpeg" alt="Weight Management & Obesity" />
+  <div class="plant-name">Weight Management & Obesity</div>
+</a>
+
+<a href="{{ url_for('hormonal') }}"  class="plant-card">
+  <img src="https://twinoakshealth.com/wp-content/uploads/2024/11/Untitled-design-8.png" alt="Menstrual & Hormonal Health" />
+  <div class="plant-name">Menstrual & Hormonal Health</div>
+</a>
+
+<a href="{{ url_for('hairfall') }}"  class="plant-card">
+  <img src="https://media6.ppl-media.com/mediafiles/blogs/shutterstock_2053913117_b9fa9fbc8c.jpg" alt="Menstrual & Hormonal Health" />
+  <div class="plant-name">Hair Fall & Scalp Disorders</div>
+</a>
+
+<a href="{{ url_for('fever') }}"  class="plant-card">
+  <img src="https://media.istockphoto.com/id/1488641686/photo/sick-thermometer-and-senior-man-in-bed-checking-fever-and-testing-for-temperature-home-and.jpg?s=612x612&w=0&k=20&c=5nPG3e6dKbQQqmbSncMUvVhcDJPLn2JIu0CDFoZGAjk=" alt="Menstrual & Hormonal Health" />
+  <div class="plant-name">Fever & Cold Relief</div>
+</a>
+
+<a href="{{ url_for('sleep') }}"  class="plant-card">
+  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQg0U68N6bplkW6guXOFWPW40aVskaoId0cgg&s" alt="Menstrual & Hormonal Health" />
+  <div class="plant-name">Sleep Disorders / Insomnia</div>
+</a>
+
+<a href="{{ url_for('reproduction') }}" class="plant-card">
+  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyJ36Re7Z2qHty-EZH9DVDxyqxFV4YJLl4zQ&s" alt="Menstrual & Hormonal Health" />
+  <div class="plant-name">Sexual & Reproductive Health</div>
+</a>
+<a href="{{ url_for('thyroid') }}"  class="plant-card">
+  <img src="https://thesurgicalclinics.com/wp-content/uploads/2022/08/thyroid-surgery-in-tennessee.jpg" alt="Menstrual & Hormonal Health" />
+  <div class="plant-name">Thyroid & Metabolic Health images</div>
+</a>
+<a href="{{ url_for('kideny') }}" class="plant-card">
+  <img src="https://img.lb.wbmdstatic.com/vim/live/webmd/consumer_assets/site_images/rich_media_quiz/topic/test_your_knowledge_about_iga_nephropathy_rmq/1800x1200_test_your_knowledge_about_iga_nephropathy_rmq.jpg" alt="Menstrual & Hormonal Health" />
+  <div class="plant-name">Kidney & Urinary Health</div>
+</a>
+<a href="{{ url_for('liver') }}"  class="plant-card">
+  <img src="https://livertransplant.co.in/wp-content/uploads/2017/05/Liver-Disease-1.jpg" alt="Menstrual & Hormonal Health" />
+  <div class="plant-name">Liver Detox & Fatty Liver Management</div>
+</a>
+<a href="{{ url_for('diabetes') }}"  class="plant-card">
+  <img src="https://c.ndtvimg.com/2018-12/65hdtp0o_diabetes-diet_625x300_14_December_18.jpg" alt="Diabetes & Blood Sugar Control" />
+  <div class="plant-name">Diabetes & Blood Sugar Control</div>
+</a>
+
+<a href="{{ url_for('allergy') }}" class="plant-card">
+  <img src="https://www.iafaforallergy.com/wp-content/uploads/2023/12/Treat-Allergies-With-Ayurveda.png.webp" alt="Allergies & Immunity Support" />
+  <div class="plant-name">Allergies & Immunity Support</div>
+</a>
+
+<a href="{{ url_for('bone') }}"  class="plant-card">
+  <img src="https://oneworldayurveda.com/wp-content/uploads/2024/12/Ayurveda-kati-basti-oneworld.jpg" alt="Bone & Joint Strengthening" />
+  <div class="plant-name">Bone & Joint Strengthening</div>
+</a>
+
+<a href="{{ url_for('hypertension') }}"  class="plant-card">
+  <img src="https://coscardiology.com/wp-content/uploads/csc-april-blog-1.png" alt="Hypertension & Blood Pressure" />
+  <div class="plant-name">Hypertension & Blood Pressure</div>
+</a>
+
+<a href="{{ url_for('stress') }}" class="plant-card">
+  <img src="https://static.toiimg.com/thumb/msid-124167430,imgsize-38726,width-400,resizemode-4/instant-anxiety-relief-tips-8-acupressure-points-to-calm-stress-anywhere.jpg" alt="Stress & Anxiety Relief" />
+  <div class="plant-name">Stress & Anxiety Relief</div>
+</a>
+
+<a  href="{{ url_for('cancer') }}"  class="plant-card">
+  <img src="https://www.mskcc.org/sites/default/files/styles/large/public/node/3184/images/Ayurveda001_3x2.jpg" alt="Cancer Prevention Support" />
+  <div class="plant-name">Cancer Prevention Support</div>
+</a>
+
+<a href="{{ url_for('oral') }}" class="plant-card">
+  <img src="https://srisriayurvedahospital.org/wp-content/uploads/2024/03/Untitled-design-2.png" alt="Oral & Dental Care" />
+  <div class="plant-name">Oral & Dental Care</div>
+</a>
+
+<a href="{{ url_for('pregnancy') }}"  class="plant-card">
+  <img src="https://www.drshraddhagalgali.com/wp-content/uploads/2025/06/9-Essential-First-Trimester-Care-Your-Complete-Guide-to-a-Healthy-Pregnancy.jpg" alt="Pregnancy & Women’s Wellness" />
+  <div class="plant-name">Pregnancy & Women’s Wellness</div>
+</a>
+
+<a href="{{ url_for('gut') }}"  class="plant-card">
+  <img src="https://nveda.in/cdn/shop/articles/WhatsApp_Image_2025-03-28_at_10.20.58_AM_2_0c150ab5-a4f5-4015-81ab-32a689ffa3df.jpg?v=1744964640&width=360" alt="Gut & Intestinal Health" />
+  <div class="plant-name">Gut & Intestinal Health</div>
+</a>
+
+<a href="{{ url_for('immunity') }}"  class="plant-card">
+  <img src="https://images.moneycontrol.com/static-mcnews/2023/07/Monsoon-fungal-infections-770x433.jpg" alt="General Immunity Boost" />
+  <div class="plant-name">General Immunity Boost</div>
+</a>
+
+</body>
+</html>     

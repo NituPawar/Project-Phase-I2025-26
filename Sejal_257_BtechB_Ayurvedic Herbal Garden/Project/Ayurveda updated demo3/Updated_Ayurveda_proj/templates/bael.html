@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bael - Medicinal Plant</title>
+<style>
+  body { font-family: 'Segoe UI', sans-serif; background: #fefce8; color: #2f3e2f; margin: 0; padding: 20px; line-height: 1.6; }
+  .container { max-width: 800px; margin: auto; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); position: relative; }
+  img { max-width: 400px; width: 100%; border-radius: 12px; margin: 0 auto 20px; display: block; }
+  h1 { color: #ca8a04; text-align: center; }
+  h2 { margin-top: 20px; color: #854d0e; }
+  a { display: inline-block; margin-top: 20px; text-decoration: none; color: #fff; background: #ca8a04; padding: 10px 15px; border-radius: 8px; }
+  a:hover { background: #854d0e; }
+  .top-right { position: absolute; top: 20px; right: 20px; margin-top: 0; }
+</style>
+</head>
+<body>
+  <div class="container">
+    <a href="{{ url_for('index1') }}" class="top-right">⬅ Back to Garden</a>
+    <h1>Bael (Aegle marmelos)</h1>
+    <img src="https://cdn.britannica.com/97/122497-050-4901E6AB/Bel-fruit.jpg" alt="Bael Fruit Tree">
+    <p><strong>Bael</strong>, also called Wood Apple, is a sacred fruit in India with numerous medicinal properties. Its pulp, leaves, and roots are all used in Ayurveda.</p>
+    
+    <h2>Uses</h2>
+    <ul>
+      <li>Fruit pulp eaten fresh or as sherbet.</li>
+      <li>Bael leaves offered in religious rituals.</li>
+      <li>Used in traditional remedies for stomach issues.</li>
+    </ul>
+
+    <h2>Health Benefits</h2>
+    <ul>
+      <li>Improves digestion and cures diarrhea.</li>
+      <li>Acts as a natural coolant in summer.</li>
+      <li>Boosts immunity and liver function.</li>
+      <li>Anti-inflammatory and antimicrobial effects.</li>
+    </ul>
+  </div>
+</body>
+</html>
